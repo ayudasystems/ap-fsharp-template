@@ -8,6 +8,7 @@ The project requires the following to be installed on your machine:
 ## Technologies used
 * `F#`
 * `.Net Core`
+* `Chocolatey`
 
 ## Working with it locally
 
@@ -22,3 +23,16 @@ or
 in command line execute the following commands in the base path.
 `dotnet build`
 `dotnet run`
+
+## Terraform organisation
+Folder: /FSharpTemplate/Terraform
+* main.tf: configures the resources that make up your infrastructure.
+* variables.tf: declares input variables for your dev and prod environment prefixes, and the AWS region to deploy to.
+* terraform.tfvars: defines your region and environment prefixes. Terraform automatically loads variable values from any files that end in .tfvars
+* outputs.tf: specifies the website endpoints for your dev and prod buckets.
+* assets: houses your webapp HTML file.
+
+Azure Resources
+* resource-group
+* app-service-plan
+* app-service

@@ -13,6 +13,17 @@
     <ItemGroup>
       <Content Include=".dockerignore" />
       <Content Include="Dockerfile" />
+      <Folder Include="Terraform\assets" />
+      <Folder Include="Terraform\cloud" />
+      <Folder Include="Terraform\preview" />
+      <Content Include="Terraform\dev\app-service.tf" />
+      <Content Include="Terraform\dev\app-service-plan.tf" />
+      <Content Include="Terraform\dev\main.tf" />
+      <Content Include="Terraform\dev\output.tf" />
+      <Content Include="Terraform\dev\providers.tf" />
+      <Content Include="Terraform\dev\resource-group.tf" />
+      <Content Include="Terraform\dev\terraform.tfvars" />
+      <Content Include="Terraform\dev\variables.tf" />
     </ItemGroup>
 
 </Project>
