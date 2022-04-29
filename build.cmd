@@ -28,6 +28,7 @@ SET TERRAFORM_PATH=./FSharpTemplate/Terraform
 cd "%TERRAFORM_PATH"
 
 terraform init
+terraform plan
 terraform apply
 <confirm_with_yes_to_perform_this_action>
 <check_resource_is_alive>
