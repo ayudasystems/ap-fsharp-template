@@ -1,4 +1,4 @@
-﻿# terraform/app-service-plan.tf
+# terraform/app-service-plan.tf
 
 # Create the Windows App Service Plan
 resource "azurerm_service_plan" "sp" {

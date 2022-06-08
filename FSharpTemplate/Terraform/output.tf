@@ -1,4 +1,4 @@
-﻿# terraform/outputs.tf
+# terraform/outputs.tf
 
 # Verify the results
 # Define an output value in output.tf file
@@ -11,6 +11,6 @@ output "resource_group_name" {
 }
 
 output "service_plan_name" {
-  value = azurerm_windows_web_app.app_service.name
+  value       = azurerm_windows_web_app.app_service.name
   description = "Deployed Web App Service name"
 }

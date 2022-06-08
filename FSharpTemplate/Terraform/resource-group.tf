@@ -1,4 +1,4 @@
-﻿# terraform/resource-group.tf
+# terraform/resource-group.tf
 
 # Create a resource group
 resource "azurerm_resource_group" "rg" {

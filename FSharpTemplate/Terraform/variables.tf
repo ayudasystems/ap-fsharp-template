@@ -1,4 +1,4 @@
-﻿# terraform/variables.tf
+# terraform/variables.tf
 
 variable "project" {
   default     = "Ayuda Project FSharp Services Template"
@@ -25,8 +25,8 @@ variable "environment_suffix" {
 }
 
 variable "resource_group_name" {
-  default       = "ayudalabs-na-01"
-  description   = "Name of the resource group."
+  default     = "ayudalabs-na-01"
+  description = "Name of the resource group."
 }
 
 variable "resource_group_location" {
@@ -36,6 +36,22 @@ variable "resource_group_location" {
 }
 
 variable "service_plan_name" {
-  default       = "ayudalabs-na-serviceplan"
-  description   = "Name of the Service Plan."
+  default     = "ayudalabs-na-serviceplan"
+  description = "Name of the Service Plan."
+}
+
+variable "azure_subscription_id" {
+  description = "Azure Subscription Id"
+}
+
+variable "azure_subscription_tenant_id" {
+  description = "Azure Tenant Id"
+}
+
+variable "service_principal_appid" {
+  description = "Azure Service Principal App Id"
+}
+
+variable "service_principal_password" {
+  description = "Azure Service Principal Password"
 }
