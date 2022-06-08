@@ -1,3 +1,4 @@
+# terraform/main.tf
 # Configures the resources that make up your infrastructure.
 
 # Generate a random integer to create a globally unique name

@@ -23,6 +23,8 @@
       <Content Include="Terraform\providers.tf" />
       <Content Include="Terraform\resource-group.tf" />
       <Content Include="Terraform\terraform.tfvars" />
+      <Content Include="Terraform\eu-uat.terraform.tfvars" />
+      <Content Include="Terraform\eu.terraform.tfvars" />
       <Content Include="Terraform\na-ci.terraform.tfvars" />
       <Content Include="Terraform\variables.tf" />
     </ItemGroup>

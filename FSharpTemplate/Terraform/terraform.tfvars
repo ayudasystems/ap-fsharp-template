@@ -1,4 +1,4 @@
-# terraform apply -var-file="na-ci.terraform.tfvars"
+# terraform/terraform.tfvars Default/Local
 
 project = "Ayuda Project FSharp Services Template"
 environment = "Ayuda Dev"
