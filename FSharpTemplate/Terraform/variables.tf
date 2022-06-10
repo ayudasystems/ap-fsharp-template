@@ -36,7 +36,7 @@ variable "resource_group_location" {
 }
 
 variable "service_plan_name" {
-  default     = "ayudalabs-na-serviceplan"
+  default     = "ayudalabs-na-ci-serviceplan"
   description = "Name of the Service Plan."
 }
 

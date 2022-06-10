@@ -11,5 +11,8 @@ resource "azurerm_virtual_network" "vn" {
   name                = "${azurerm_resource_group.rg.name}-vnet"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  address_space       = ["10.0.0.0/24"]
+  tags = {
+    "Customer" = "Stroeer"
+  }
+  address_space = ["10.0.0.0/24"]
 }
