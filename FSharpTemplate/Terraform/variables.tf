@@ -12,10 +12,10 @@ variable "environment" {
   description = "Environment (Ayuda Dev / Ayuda Preview / Ayuda Cloud)"
 }
 
-variable "repo_key" {
-  default     = "ap-fsharp-template"
+variable "service_name" {
+  default     = "FSharpTemplate"
   type        = string
-  description = "Repository key"
+  description = "New Service Name"
 }
 
 variable "environment_suffix" {

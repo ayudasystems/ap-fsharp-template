@@ -8,9 +8,15 @@
 # Example: Resource Group Name
 output "resource_group_name" {
   value = azurerm_resource_group.rg.name
+  description = "Resource Group name"
 }
 
 output "service_plan_name" {
-  value       = azurerm_windows_web_app.app_service.name
+  value = azurerm_service_plan.sp.name
+  description = "Service Plan name"
+}
+
+output "app_service_name" {
+  value       = azurerm_windows_web_app.as.name
   description = "Deployed Web App Service name"
 }
