@@ -13,7 +13,7 @@ variable "environment" {
 }
 
 variable "repo_key" {
-  default     = "ap_fsharp-template"
+  default     = "ap-fsharp-template"
   type        = string
   description = "Repository key"
 }
