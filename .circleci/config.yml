@@ -101,6 +101,8 @@ jobs:
 
 workflows:
   deploy_infrastructure:
+    when:
+      - equal: false
     jobs:
       - build
 #      - azure_login:
@@ -109,4 +111,4 @@ workflows:
       - terraform-single-job:
           requires:
 #            - azure_login
-            - build 
+            - build
