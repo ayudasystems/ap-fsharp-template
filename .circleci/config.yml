@@ -48,14 +48,16 @@ jobs:
   terraform-single-job:
     executor: terraform/default
     steps:
-      - checkout
-      - terraform/init:
-          path: .
-      - terraform/validate:
-          path: .
+      - terraform/init
+      - terraform/validate
+          requires:
+            - terraform/init
       - terraform/fmt:
-          path: .
+          requires:
+            - terraform/validate
       - terraform/plan:
+          requires:
+            - terraform/fmt
           parameters:
             azure_subscription_id:
               default: $AZ_SUBSCRIPTION_ID
@@ -75,6 +77,8 @@ jobs:
               type: string
           path: .
       - terraform/apply:
+          requires:
+            - terraform/plan
           parameters:
             azure_subscription_id:
               default: $AZ_SUBSCRIPTION_ID
