@@ -25,18 +25,16 @@ parameters:
 # Note: These are provided by the ap-fsharp-template-resource-credentials-labs context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
-# - RESOURCE_GROUP_NAME
-# - SERVICE_PLAN_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-preview context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
-# - RESOURCE_GROUP_NAME
-# - SERVICE_PLAN_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-cloud context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+
+# Note: These are provided by the az-resources-labs context
 # - RESOURCE_GROUP_NAME
 # - SERVICE_PLAN_NAME
 
@@ -160,4 +158,5 @@ workflows:
             - build_image
           context:
             - az-resources
+            - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
