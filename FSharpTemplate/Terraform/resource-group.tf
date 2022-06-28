@@ -7,12 +7,12 @@ resource "azurerm_resource_group" "rg" {
 }
 
 # Create a virtual network within the resource group
-resource "azurerm_virtual_network" "vn" {
-  name                = "${azurerm_resource_group.rg.name}-vnet"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  tags = {
-    "Customer" = "Stroeer"
-  }
-  address_space = ["10.0.0.0/24"]
-}
+#resource "azurerm_virtual_network" "vn" {
+#  name                = "${azurerm_resource_group.rg.name}-vnet"
+#  resource_group_name = azurerm_resource_group.rg.name
+#  location            = azurerm_resource_group.rg.location
+#  tags = {
+#    "Customer" = "Stroeer"
+#  }
+#  address_space = [var.virtual_network_add]
+#}

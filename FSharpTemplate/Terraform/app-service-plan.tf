@@ -6,5 +6,5 @@ resource "azurerm_service_plan" "sp" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Windows"
-  sku_name            = "S1"
+  sku_name            = var.service_plan_sku_name
 }

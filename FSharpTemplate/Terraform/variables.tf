@@ -40,6 +40,11 @@ variable "service_plan_name" {
   description = "Name of the Service Plan."
 }
 
+variable "service_plan_sku_name" {
+  default     = "S1"
+  description = "Name of the Service Plan Pricing Tier."
+}
+
 variable "azure_subscription_id" {
   description = "Azure Subscription Id"
 }
