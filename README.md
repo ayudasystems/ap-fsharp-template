@@ -47,6 +47,10 @@ Azure Resources
 * `terraform destroy`: command is a convenient way to destroy all remote objects managed by a particular Terraform configuration.
   (https://www.terraform.io/cli/commands/destroy)
 
+## CircleCI
+* .circleci/config.yml
+* Terrafor Orb Documentation
+https://circleci.com/developer/orbs/orb/circleci/terraform
 
 ## ARM Templates organisation
 Folder: /FSharpTemplate/ARMTemplates
