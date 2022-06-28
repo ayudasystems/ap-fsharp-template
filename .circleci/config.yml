@@ -96,11 +96,7 @@ jobs:
 #          os: linux
 #          terraform_version: 0.14.2
       - terraform/validate
-        requires:
-          - checkout
       - terraform/init
-        requires:
-          - terraform/validate
       - run:
           command: >-
             terraform import 
