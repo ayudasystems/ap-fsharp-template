@@ -6,7 +6,7 @@ WORKDIR /src
 COPY ["FSharpTemplate/FSharpTemplate.fsproj", "FSharpTemplate/"]
 RUN dotnet restore "FSharpTemplate/FSharpTemplate.fsproj"
 COPY . .
-WORKDIR "/src/FSharpTemplate"
+WORKDIR "/FSharpTemplate"
 RUN dotnet build "FSharpTemplate.fsproj" -c Release -o /app/build
 
 FROM build AS publish
