@@ -98,11 +98,9 @@ jobs:
       - terraform/validate
         requires:
           - checkout
-        path: .
       - terraform/init
         requires:
           - terraform/validate
-        path: .
       - run:
           command: >-
             terraform import 
@@ -154,13 +152,15 @@ jobs:
 
 workflows:
   deploy_infrastructure:
-    when:
-      - equal: false
     jobs:
       - build
       - build_image:
-          - context:
+          context:
               - ayuda-acr
-      - terraform-single-job:
+      - terraform-single-job-labs:
           requires:
             - build
+            - build_image
+          context:
+            - az-resources
+            - ap-fsharp-template-resource-credentials-labs
