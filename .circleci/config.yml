@@ -54,11 +54,11 @@ jobs:
       - run:
           name: Build
           command: dotnet build
-          working_directory: pipeline.parameters.service_name
+          working_directory: << pipeline.parameters.service_name >>
       - run:
           name: Running Tests
           command: dotnet test
-          working_directory: pipeline.parameters.service_name
+          working_directory: << pipeline.parameters.service_name >>
 
 #  other-unit-tests:
 #    ToDo
@@ -78,7 +78,7 @@ jobs:
       - run:
           name: Build image
           command: docker build --tag << pipeline.parameters.docker_name >>:build-<< pipeline.number >> --tag << pipeline.parameters.docker_name >>:latest .
-          working_directory: pipeline.parameters.service_name
+          working_directory: << pipeline.parameters.service_name >>
       - run:
           name: Save Docker image
           command: docker save -o << pipeline.parameters.docker_name >>_latest.tar "<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>"
