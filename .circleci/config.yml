@@ -15,6 +15,7 @@ parameters:
     type: string
   terraform_env_config_file:
     default: na-ci.terraform.tfvars
+    type: string
 
 # Note: These are provided by the ayuda-acr context
 # - AP_CONTAINER_REGISTRY_HOST
@@ -76,19 +77,19 @@ jobs:
           command: echo $AP_CONTAINER_REGISTRY_PASSWORD | docker login $AP_CONTAINER_REGISTRY_HOST -u $AP_CONTAINER_REGISTRY_USERNAME --password-stdin
       - run:
           name: Build image
-          command: docker build --tag << parameters.docker_name >>:build-<< pipeline.number >> --tag << parameters.docker_name >>:latest .
-          working_directory: parameters.service_name
+          command: docker build --tag << pipeline.parameters.docker_name >>:build-<< pipeline.number >> --tag << pipeline.parameters.docker_name >>:latest .
+          working_directory: pipeline.parameters.service_name
       - run:
           name: Save Docker image
-          command: docker save -o << parameters.docker_name >>_latest.tar "<< parameters.docker_name >>:build-<< pipeline.number >>"
+          command: docker save -o << pipeline.parameters.docker_name >>_latest.tar "<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>"
       - persist_to_workspace:
           root: .
           paths:
-            - << parameters.docker_name >>_latest.tar
+            - << pipeline.parameters.docker_name >>_latest.tar
 
   terraform-single-job-labs:
     executor: terraform/default
-    working_directory: ~/<< parameters.service_name >>/Terraform
+    working_directory: ~/<< pipeline.parameters.service_name >>/Terraform
     steps:
       - checkout
 #      - terraform/install:
@@ -118,7 +119,7 @@ jobs:
       - run:
           command: >-
             terraform plan
-            \ -var-file="<< parameters.terraform_env_config_file >>"
+            \ -var-file="<< pipeline.parameters.terraform_env_config_file >>"
             \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
             \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
             \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
@@ -128,7 +129,7 @@ jobs:
       - run:
           command: >-
             terraform apply -auto-approve
-            \ -var-file="<< parameters.terraform_env_config_file >>"
+            \ -var-file="<< pipeline.parameters.terraform_env_config_file >>"
             \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
             \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
             \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
@@ -138,7 +139,7 @@ jobs:
       - run:
           command: >-
             terraform apply -auto-approve
-            \ -var-file="<< parameters.terraform_env_config_file >>"
+            \ -var-file="<< pipeline.parameters.terraform_env_config_file >>"
             \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
             \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
             \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
