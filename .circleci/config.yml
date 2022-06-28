@@ -6,17 +6,38 @@ version: 2.1
 orbs:
   terraform: circleci/terraform@3.1.0
 
+parameters:
+  service_name:
+    default: FSharpTemplate
+    type: string
+  docker_name:
+    default: fsharptemplate
+    type: string
+  terraform_env_config_file:
+    default: na-ci.terraform.tfvars
+
+# Note: These are provided by the ayuda-acr context
+# - AP_CONTAINER_REGISTRY_HOST
+# - AP_CONTAINER_REGISTRY_PASSWORD
+# - AP_CONTAINER_REGISTRY_USERNAME
+
 # Note: These are provided by the ap-fsharp-template-resource-credentials-labs context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+# - RESOURCE_GROUP_NAME
+# - SERVICE_PLAN_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-preview context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+# - RESOURCE_GROUP_NAME
+# - SERVICE_PLAN_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-cloud context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+# - RESOURCE_GROUP_NAME
+# - SERVICE_PLAN_NAME
 
 # Note: These are provided by the az-resources context
 # - AZ_TENANT
@@ -32,72 +53,104 @@ jobs:
       - run:
           name: Build
           command: dotnet build
-          working_directory: FSharpTemplate
-#  azure_login:
-#    docker:
-#      - image: mcr.microsoft.com/azure-cli:latest
-#        user: root
-#    steps:
-#      - checkout
-#      - run:
-#          name: Login
-#          command: az login --service-principal -u $AZ_SERVICE_PRINCIPAL_APP_ID -p $AZ_SERVICE_PRINCIPAL_APP_PASSWORD --tenant $AZ_TENANT
-#      - run:
-#          name: Set Subscription Id
-#          command: az account set -s $AZ_SUBSCRIPTION_ID
-  terraform-single-job:
-    executor: terraform/default
+          working_directory: parameters.service_name
+      - run:
+          name: Running Tests
+          command: dotnet test
+          working_directory: parameters.service_name
+
+#  other-unit-tests:
+#    ToDo
+#  integration-tests:
+#    ToDo
+
+  build_image:
+    docker:
+      - image: circleci/buildpack-deps:latest
+        user: root
     steps:
-      - terraform/init
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Docker login
+          command: echo $AP_CONTAINER_REGISTRY_PASSWORD | docker login $AP_CONTAINER_REGISTRY_HOST -u $AP_CONTAINER_REGISTRY_USERNAME --password-stdin
+      - run:
+          name: Build image
+          command: docker build --tag << parameters.docker_name >>:build-<< pipeline.number >> --tag << parameters.docker_name >>:latest .
+          working_directory: parameters.service_name
+      - run:
+          name: Save Docker image
+          command: docker save -o << parameters.docker_name >>_latest.tar "<< parameters.docker_name >>:build-<< pipeline.number >>"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - << parameters.docker_name >>_latest.tar
+
+  terraform-single-job-labs:
+    executor: terraform/default
+    working_directory: ~/<< parameters.service_name >>/Terraform
+    steps:
+      - checkout
+#      - terraform/install:
+#          arch: amd64
+#          os: linux
+#          terraform_version: 0.14.2
       - terraform/validate
-          requires:
-            - terraform/init
-      - terraform/fmt:
-          requires:
-            - terraform/validate
-      - terraform/plan:
-          requires:
-            - terraform/fmt
-          parameters:
-            azure_subscription_id:
-              default: $AZ_SUBSCRIPTION_ID
-              description: Azure Subscription Id
-              type: string
-            azure_subscription_tenant_id:
-              default: $AZ_TENANT
-              description: Azure Tenant Id
-              type: string
-            service_principal_appid:
-              default: $AZ_SERVICE_PRINCIPAL_APP_ID
-              description: Azure Service Principal App Id
-              type: string
-            service_principal_password:
-              default: $AZ_SERVICE_PRINCIPAL_APP_PASSWORD
-              description: Azure Service Principal Password
-              type: string
-          path: .
-      - terraform/apply:
-          requires:
-            - terraform/plan
-          parameters:
-            azure_subscription_id:
-              default: $AZ_SUBSCRIPTION_ID
-              description: Azure Subscription Id
-              type: string
-            azure_subscription_tenant_id:
-              default: $AZ_TENANT
-              description: Azure Tenant Id
-              type: string
-            service_principal_appid:
-              default: $AZ_SERVICE_PRINCIPAL_APP_ID
-              description: Azure Service Principal App Id
-              type: string
-            service_principal_password:
-              default: $AZ_SERVICE_PRINCIPAL_APP_PASSWORD
-              description: Azure Service Principal Password
-              type: string
-          path: .
-    working_directory: ~/FSharpTemplate/Terraform
+        requires:
+          - checkout
+        path: .
+      - terraform/init
+        requires:
+          - terraform/validate
+        path: .
+      - run:
+          command: >-
+            terraform import 
+            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
+            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
+            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
+            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
+            \ azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
+          name: Import Resource Group from Azure
+      - run:
+          command: >-
+            terraform import 
+            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
+            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
+            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
+            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
+            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+          name: Import Service Principal from Azure
+      - run:
+          command: >-
+            terraform plan
+            \ -var-file="<< parameters.terraform_env_config_file >>"
+            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
+            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
+            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
+            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
+            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+          name: Plan Terraform for loggin purposes
+      - run:
+          command: >-
+            terraform apply -auto-approve
+            \ -var-file="<< parameters.terraform_env_config_file >>"
+            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
+            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
+            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
+            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
+            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+          name: Apply Terraform plan, creating the resources in cloud
+      - run:
+          command: >-
+            terraform apply -auto-approve
+            \ -var-file="<< parameters.terraform_env_config_file >>"
+            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
+            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
+            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
+            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
+            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+          name: Import Service Principal from Azure
 
 workflows:
   deploy_infrastructure:
@@ -105,10 +158,9 @@ workflows:
       - equal: false
     jobs:
       - build
-#      - azure_login:
-#          requires:
-#            - build
+      - build_image:
+          - context:
+              - ayuda-acr
       - terraform-single-job:
           requires:
-#            - azure_login
             - build
