@@ -54,11 +54,11 @@ jobs:
       - run:
           name: Build
           command: dotnet build
-          working_directory: parameters.service_name
+          working_directory: pipeline.parameters.service_name
       - run:
           name: Running Tests
           command: dotnet test
-          working_directory: parameters.service_name
+          working_directory: pipeline.parameters.service_name
 
 #  other-unit-tests:
 #    ToDo
@@ -154,6 +154,8 @@ workflows:
       - build_image:
           context:
               - ayuda-acr
+          requires:
+            - build
       - terraform-single-job-labs:
           requires:
             - build
