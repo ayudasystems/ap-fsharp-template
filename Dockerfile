@@ -2,15 +2,13 @@
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
 COPY ["FSharpTemplate/FSharpTemplate.fsproj", "FSharpTemplate/"]
 RUN dotnet restore "FSharpTemplate/FSharpTemplate.fsproj"
 COPY . .
-WORKDIR "/FSharpTemplate"
-RUN dotnet build "FSharpTemplate.fsproj" -c Release -o /app/build
+RUN dotnet build "FSharpTemplate/FSharpTemplate.fsproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "FSharpTemplate.fsproj" -c Release -o /app/publish
+RUN dotnet publish "FSharpTemplate/FSharpTemplate.fsproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
