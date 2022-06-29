@@ -94,6 +94,35 @@ jobs:
           paths:
             - << pipeline.parameters.docker_name >>_latest.tar
 
+  push_image:
+    machine:
+      image: ubuntu-2004:202201-02
+    resource_class: small
+    parameters:
+      repo:
+        type: string
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Docker login
+          command: echo $AP_CONTAINER_REGISTRY_PASSWORD | docker login $AP_CONTAINER_REGISTRY_HOST -u $AP_CONTAINER_REGISTRY_USERNAME --password-stdin
+      - run:
+          name: Load Docker image
+          command: docker load -i ./<< pipeline.parameters.docker_name >>_latest.tar
+      - run:
+          name: Tag image with build number
+          command: docker tag << pipeline.parameters.docker_name >>:build-<< pipeline.number >> "$AP_CONTAINER_REGISTRY_HOST/<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>"
+      - run:
+          name: Tag image latest
+          command: docker tag << pipeline.parameters.docker_name >>:build-<< pipeline.number >> "$AP_CONTAINER_REGISTRY_HOST/<< pipeline.parameters.docker_name >>:latest"
+      - run:
+          name: Push image
+          command: docker push "$AP_CONTAINER_REGISTRY_HOST/<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>"
+      - run:
+          name: Push image as latest
+          command: docker push "$AP_CONTAINER_REGISTRY_HOST/<< pipeline.parameters.docker_name >>:latest"
+
   terraform-single-job-labs:
     working_directory: /tmp/project
     docker:
@@ -118,10 +147,6 @@ jobs:
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
 
 workflows:
   deploy_infrastructure:
@@ -132,10 +157,16 @@ workflows:
               - ayuda-acr
           requires:
             - build
-      - terraform-single-job-labs:
+      - push_image:
+          context:
+            - ayuda-acr
           requires:
-            - build
             - build_image
+      - terraform-single-job-labs:
+          when:
+            - equal: false
+          requires:
+            - push_image
           context:
             - az-resources
             - az-resources-labs
