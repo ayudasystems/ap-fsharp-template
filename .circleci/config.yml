@@ -102,7 +102,7 @@ jobs:
           name: terraform plan & apply infrastructure
           command: |
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
-            TERRAFORM_ENV_CONFIG_FILE = << pipeline.parameters.terraform_env_config_file >>
+            TERRAFORM_ENV_CONFIG_FILE = "<< pipeline.parameters.terraform_env_config_file >>"
             terraform init
             terraform validate
             cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
