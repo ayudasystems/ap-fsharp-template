@@ -55,6 +55,7 @@ jobs:
   build:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
+    resource_class: small
     steps:
       - checkout
       - run:
@@ -74,6 +75,7 @@ jobs:
   build_image:
     docker:
       - image: circleci/buildpack-deps:latest
+    resource_class: small
     steps:
       - checkout
       - setup_remote_docker:
