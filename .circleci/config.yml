@@ -101,10 +101,6 @@ jobs:
           name: terraform validate & init & import(s) & plan & apply
           command: |
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
-            echo $AZ_SUBSCRIPTION_ID
-            echo $AZ_TENANT
-            echo $AZ_SERVICE_PRINCIPAL_APP_ID
-            echo $RESOURCE_GROUP_NAME
             terraform init
             terraform validate
             terraform import -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID' -var 'azure_subscription_tenant_id=$AZ_TENANT' -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID' -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD' azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
