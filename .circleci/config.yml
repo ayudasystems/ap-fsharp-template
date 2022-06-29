@@ -37,9 +37,17 @@ parameters:
 # Note: These are provided by the az-resources-labs context
 # - RESOURCE_GROUP_NAME
 # - SERVICE_PLAN_NAME
+# - AZ_SUBSCRIPTION_ID
+
+# Note: These are provided by the az-resources-preview context
+# - RESOURCE_GROUP_NAME
+# - SERVICE_PLAN_NAME
+# - AZ_SUBSCRIPTION_ID
 
 # Note: These are provided by the az-resources context
 # - AZ_TENANT
+# - RESOURCE_GROUP_NAME
+# - SERVICE_PLAN_NAME
 # - AZ_SUBSCRIPTION_ID
 
 # Define the jobs for the current project.
