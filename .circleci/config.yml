@@ -98,9 +98,6 @@ jobs:
     machine:
       image: ubuntu-2004:202201-02
     resource_class: small
-    parameters:
-      repo:
-        type: string
     steps:
       - attach_workspace:
           at: ./
