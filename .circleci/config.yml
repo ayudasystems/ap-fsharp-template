@@ -84,7 +84,7 @@ jobs:
             - << pipeline.parameters.docker_name >>_latest.tar
 
   terraform-single-job-labs:
-    working_directory: /tmp
+    working_directory: /tmp/project
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
@@ -92,7 +92,7 @@ jobs:
       - run:
           name: terraform validate & init & import(s) & plan & apply
           command: |
-            cd '/tmp/<< pipeline.parameters.service_name >>/Terraform'
+            cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
             terraform validate
             terraform init
             pwd
