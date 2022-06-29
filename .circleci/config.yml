@@ -76,7 +76,8 @@ jobs:
       - image: circleci/buildpack-deps:latest
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Docker login
           command: echo $AP_CONTAINER_REGISTRY_PASSWORD | docker login $AP_CONTAINER_REGISTRY_HOST -u $AP_CONTAINER_REGISTRY_USERNAME --password-stdin
@@ -95,7 +96,7 @@ jobs:
     working_directory: /tmp/project
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-    resource_class: medium
+    resource_class: small
     steps:
       - checkout
       - run:
@@ -113,7 +114,7 @@ jobs:
             END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
-            terraform plan -out -var-file="$TERRAFORM_ENV_CONFIG_FILE"
+            terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
       - persist_to_workspace:
           root: .
