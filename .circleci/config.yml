@@ -159,12 +159,10 @@ workflows:
             - ayuda-acr
           requires:
             - build_image
-      - terraform-single-job-labs:
-          when:
-            - equal: false
-          requires:
-            - push_image
-          context:
-            - az-resources
-            - az-resources-labs
-            - ap-fsharp-template-resource-credentials-labs
+#      - terraform-single-job-labs:
+#          requires:
+#            - push_image
+#          context:
+#            - az-resources
+#            - az-resources-labs
+#            - ap-fsharp-template-resource-credentials-labs
