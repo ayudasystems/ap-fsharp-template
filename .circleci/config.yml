@@ -104,7 +104,8 @@ jobs:
             terraform init
             terraform validate
             terraform import -var azure_subscription_id=$AZ_SUBSCRIPTION_ID -var azure_subscription_tenant_id=$AZ_TENANT -var service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID -var service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
-            terraform import -var azure_subscription_id=$AZ_SUBSCRIPTION_ID -var azure_subscription_tenant_id=$AZ_TENANT  -var service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID -var service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME 
+            terraform import -var azure_subscription_id=$AZ_SUBSCRIPTION_ID -var azure_subscription_tenant_id=$AZ_TENANT  -var service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID -var service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+            terraform plan -var-file="<< pipeline.parameters.terraform_env_config_file >>" -var azure_subscription_id=$AZ_SUBSCRIPTION_ID -var azure_subscription_tenant_id=$AZ_TENANT  -var service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID -var service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME  
       - persist_to_workspace:
           root: .
           paths:
