@@ -113,77 +113,26 @@ jobs:
             END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
-            terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
-#            terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
+            terraform plan -out -var-file="$TERRAFORM_ENV_CONFIG_FILE"
+            terraform apply -auto-approve
       - persist_to_workspace:
           root: .
           paths:
             - .
-#--------------------------------
-#      - terraform/install:
-#          arch: amd64
-#          os: linux
-#          terraform_version: 0.14.2
-#--------------------------------
-#      - terraform/validate
-#      - terraform/init
-#      - run:
-#          command: >-
-#            terraform import -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID' -var 'azure_subscription_tenant_id=$AZ_TENANT' -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID' -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD' azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
-#          name: Import Resource Group from Azure
-#      - run:
-#          command: >-
-#            terraform import
-#            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
-#            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
-#            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
-#            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
-#            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
-#          name: Import Service Principal from Azure
-#      - run:
-#          command: >-
-#            terraform plan
-#            \ -var-file="<< pipeline.parameters.terraform_env_config_file >>"
-#            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
-#            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
-#            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
-#            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
-#            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
-#          name: Plan Terraform for loggin purposes
-#      - run:
-#          command: >-
-#            terraform apply -auto-approve
-#            \ -var-file="<< pipeline.parameters.terraform_env_config_file >>"
-#            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
-#            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
-#            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
-#            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
-#            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
-#          name: Apply Terraform plan, creating the resources in cloud
-#      - run:
-#          command: >-
-#            terraform apply -auto-approve
-#            \ -var-file="<< pipeline.parameters.terraform_env_config_file >>"
-#            \ -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID'
-#            \ -var 'azure_subscription_tenant_id=$AZ_TENANT'
-#            \ -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID'
-#            \ -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD'
-#            \ azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
-#          name: Import Service Principal from Azure
 
 workflows:
   deploy_infrastructure:
     jobs:
-#      - build
-#      - build_image:
-#          context:
-#              - ayuda-acr
-#          requires:
-#            - build
+      - build
+      - build_image:
+          context:
+              - ayuda-acr
+          requires:
+            - build
       - terraform-single-job-labs:
-#          requires:
-#            - build
-#            - build_image
+          requires:
+            - build
+            - build_image
           context:
             - az-resources
             - az-resources-labs
