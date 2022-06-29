@@ -37,26 +37,42 @@ variable "resource_group_location" {
 
 variable "service_plan_name" {
   default     = "ayudalabs-na-ci-serviceplan"
+  type        = string
   description = "Name of the Service Plan."
 }
 
 variable "service_plan_sku_name" {
   default     = "S1"
+  type        = string
   description = "Name of the Service Plan Pricing Tier."
 }
 
 variable "azure_subscription_id" {
+  type        = string
   description = "Azure Subscription Id"
 }
 
 variable "azure_subscription_tenant_id" {
+  type        = string
   description = "Azure Tenant Id"
 }
 
 variable "service_principal_appid" {
+  type        = string
   description = "Azure Service Principal App Id"
 }
 
 variable "service_principal_password" {
+  type        = string
   description = "Azure Service Principal Password"
+}
+
+variable "docker_container_name" {
+  type        = string
+  description = "Docker Image Name to be used in App Service"
+}
+
+variable "docker_container_registry" {
+  type        = string
+  description = "Docker Container Registry"
 }

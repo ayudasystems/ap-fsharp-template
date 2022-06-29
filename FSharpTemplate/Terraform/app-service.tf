@@ -13,4 +13,10 @@ resource "azurerm_windows_web_app" "as" {
   #    "SOME_KEY" = "some-value"
   #  }
 
+  application_stack = {
+    docker_container_name = var.docker_container_name
+    docker_container_registry = var.docker_container_registry
+    docker_container_tag = "latest"
+  }
+
 }
