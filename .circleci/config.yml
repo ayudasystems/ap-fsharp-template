@@ -16,9 +16,6 @@ parameters:
   terraform_env_config_file:
     default: na-ci.terraform.tfvars
     type: string
-  terraform_provider_config_file:
-    default: na-ci.provider.terraform.tfvars
-    type: string
 
 # Note: These are provided by the ayuda-acr context
 # - AP_CONTAINER_REGISTRY_HOST
@@ -107,15 +104,15 @@ jobs:
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
             terraform init
             terraform validate
-            cat > /tmp/project/<< pipeline.parameters.service_name >>/Terraform/<< pipeline.parameters.terraform_provider_config_file >> \<< END
+            cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/<< pipeline.parameters.terraform_env_config_file >> \<< END
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
             azure_subscription_tenant_id = "$AZ_TENANT"
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
             service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
             END
-            terraform import -var-file="<< pipeline.parameters.terraform_provider_config_file >>" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
-            terraform import -var-file="<< pipeline.parameters.terraform_provider_config_file >>" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
-            terraform plan -var-file="<< pipeline.parameters.terraform_env_config_file >>" -var-file="<< pipeline.parameters.terraform_provider_config_file >>" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+            terraform import -var-file="<< pipeline.parameters.terraform_env_config_file >>" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
+            terraform import -var-file="<< pipeline.parameters.terraform_env_config_file >>" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
+            terraform plan -var-file="<< pipeline.parameters.terraform_env_config_file >>"
       - persist_to_workspace:
           root: .
           paths:
