@@ -99,20 +99,22 @@ jobs:
     steps:
       - checkout
       - run:
-          name: terraform validate & init & import(s) & plan & apply
+          name: terraform plan & apply infrastructure
           command: |
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
+            TERRAFORM_ENV_CONFIG_FILE = << pipeline.parameters.terraform_env_config_file >>
             terraform init
             terraform validate
-            cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/<< pipeline.parameters.terraform_env_config_file >> \<< END
+            cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
             azure_subscription_tenant_id = "$AZ_TENANT"
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
             service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
             END
-            terraform import -var-file="<< pipeline.parameters.terraform_env_config_file >>" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
-            terraform import -var-file="<< pipeline.parameters.terraform_env_config_file >>" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
-            terraform plan -var-file="<< pipeline.parameters.terraform_env_config_file >>"
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
+            terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
+            terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
       - persist_to_workspace:
           root: .
           paths:
