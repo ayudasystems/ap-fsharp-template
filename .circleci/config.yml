@@ -103,7 +103,7 @@ jobs:
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
             terraform init
             terraform validate
-            terraform import -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID' -var 'azure_subscription_tenant_id=$AZ_TENANT' -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID' -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD' azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
+            terraform import -var azure_subscription_id=$AZ_SUBSCRIPTION_ID -var azure_subscription_tenant_id=$AZ_TENANT -var service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID -var service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
       - persist_to_workspace:
           root: .
           paths:
