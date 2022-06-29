@@ -96,7 +96,7 @@ jobs:
 
   push_image:
     docker:
-      - image: cimg/base:2021.04:latest
+      - image: cimg/base:2021.04
     resource_class: small
     steps:
       - attach_workspace:
