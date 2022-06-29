@@ -95,8 +95,8 @@ jobs:
             - << pipeline.parameters.docker_name >>_latest.tar
 
   push_image:
-    machine:
-      image: ubuntu-2004:202201-02
+    docker:
+      - image: cimg/base:2021.04:latest
     resource_class: small
     steps:
       - attach_workspace:
