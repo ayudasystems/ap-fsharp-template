@@ -93,11 +93,9 @@ jobs:
           name: terraform validate & init & import(s) & plan & apply
           command: |
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
-            pwd
-            ls -la            
             terraform init
             terraform validate
-#            terraform import -var 'azure_subscription_id=b9f2d614-47a6-4974-9a3a-9d260db71e07' -var 'azure_subscription_tenant_id=baf00b3a-3dce-4b83-a82c-e4ffaee51f84' -var 'service_principal_appid=771e6187-899a-4a94-b9ca-7ec66fa153e1' -var 'service_principal_password=aRr8Q~QVMrCgvobG60hULPuNgtOYfXiDc4DdfcDu' azurerm_resource_group.rg /subscriptions/b9f2d614-47a6-4974-9a3a-9d260db71e07/resourceGroups/ayudalabs-na-01
+            terraform import -var 'azure_subscription_id=$AZ_SUBSCRIPTION_ID' -var 'azure_subscription_tenant_id=$AZ_TENANT' -var 'service_principal_appid=$AZ_SERVICE_PRINCIPAL_APP_ID' -var 'service_principal_password=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD' azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
       - persist_to_workspace:
           root: .
           paths:
