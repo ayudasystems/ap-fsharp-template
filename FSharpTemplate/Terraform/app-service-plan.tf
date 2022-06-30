@@ -1,6 +1,6 @@
 # terraform/app-service-plan.tf
 
-# Create the Windows App Service Plan
+# Create the Linux App Service Plan
 resource "azurerm_service_plan" "sp" {
   name                = var.service_plan_name
   location            = azurerm_resource_group.rg.location
