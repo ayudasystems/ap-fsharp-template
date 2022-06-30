@@ -13,10 +13,10 @@ resource "azurerm_windows_web_app" "as" {
 
   site_config {
 
-    application_stack = {
-      docker_container_name = var.docker_container_name
+    application_stack {
+      docker_container_name     = var.docker_container_name
       docker_container_registry = var.docker_container_registry
-      docker_container_tag = var.docker_container_tag
+      docker_container_tag      = var.docker_container_tag
     }
 
   }
