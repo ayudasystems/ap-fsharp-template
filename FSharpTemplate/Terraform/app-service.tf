@@ -18,9 +18,8 @@ resource "azurerm_windows_web_app" "as" {
   site_config {
 
     application_stack {
-      docker_container_registry = var.docker_registry_server_url
-      docker_container_name     = var.docker_container_name
-      docker_container_tag      = var.docker_container_tag
+      docker_image     = "${var.docker_registry_server_url}/${var.docker_container_name}:${var.docker_container_tag}"
+      docker_image_tag = var.docker_container_tag
     }
 
     #    windows_fx_version = "DOCKER|${azurerm_container_registry.cr.name}/${var.docker_container_tag}"
