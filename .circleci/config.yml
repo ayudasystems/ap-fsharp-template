@@ -152,7 +152,7 @@ jobs:
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
-            DOCKER_CONTAINER_TAG=<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>                     
+            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>                     
             terraform init
             terraform validate
             cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
