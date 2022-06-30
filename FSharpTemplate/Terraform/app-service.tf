@@ -18,7 +18,7 @@ resource "azurerm_linux_web_app" "as" {
   site_config {
 
     application_stack {
-      docker_image     = "${var.docker_registry_server_url}/${var.docker_container_name}:${var.docker_container_tag}"
+      docker_image     = "${var.docker_registry_server_url}/${var.docker_container_name}"
       docker_image_tag = var.docker_container_tag
     }
 
