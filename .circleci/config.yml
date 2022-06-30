@@ -183,7 +183,7 @@ workflows:
             - build
       - push_image:
           context:
-            - ayuda-acr
+            - ayuda-acr-labs
           requires:
             - build_image
       - terraform-single-job-labs:
