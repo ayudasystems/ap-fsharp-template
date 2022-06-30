@@ -67,17 +67,22 @@ variable "service_principal_password" {
   description = "Azure Service Principal Password"
 }
 
+variable "docker_registry_server_username" {
+  type        = string
+  description = "Docker Registry Server Username"
+}
+
+variable "docker_registry_server_password" {
+  type        = string
+  description = "Docker Registry Server Password"
+}
+
+variable "docker_registry_server_url" {
+  type        = string
+  description = "Docker Registry Server Hostname"
+}
+
 variable "docker_container_name" {
   type        = string
   description = "Docker Image Name to be used in App Service"
-}
-
-variable "docker_container_registry" {
-  type        = string
-  description = "Docker Container Registry"
-}
-
-variable "docker_container_tag" {
-  type        = string
-  description = "Docker Container Tag version generated in previous build"
 }
