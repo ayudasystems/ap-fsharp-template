@@ -6,4 +6,5 @@ resource "azurerm_container_registry" "cr" {
   resource_group_name = var.docker_registry_resource_group_name
   location            = azurerm_resource_group.rg.location
   sku                 = "Standard"
+  admin_enabled       = true
 }
