@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="HealthCheck.fs" />
+        <Compile Include="HttpRoutes.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
@@ -28,6 +30,11 @@
       <Content Include="Terraform\eu.terraform.tfvars" />
       <Content Include="Terraform\na-ci.terraform.tfvars" />
       <Content Include="Terraform\variables.tf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Giraffe" Version="6.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     </ItemGroup>
 
 </Project>

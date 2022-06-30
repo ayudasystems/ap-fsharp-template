@@ -25,6 +25,7 @@ resource "azurerm_linux_web_app" "as" {
     #    windows_fx_version = "DOCKER|${azurerm_container_registry.cr.name}/${var.docker_container_tag}"
     container_registry_managed_identity_client_id = azurerm_user_assigned_identity.uai.client_id
     container_registry_use_managed_identity       = true
+    health_check_path                             = "/api/health"
 
   }
 

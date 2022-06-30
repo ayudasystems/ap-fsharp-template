@@ -1,7 +1,28 @@
+open FSharpTemplate
+open Giraffe
+open System
+open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.Hosting
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
+
+let configureApp (app : IApplicationBuilder) =
+    let test = "test"
+    app
+       .UseGiraffe(HttpRoutes.api test)
+       
+let configureServices (services : IServiceCollection) =
+    services.AddGiraffe() |> ignore
+           
 [<EntryPoint>]
-let main _ =
-
-    // For more information see https://aka.ms/fsharp-console-apps
-    printfn "Hello from F#"
-
+let main args =
+    Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(
+            fun webHostBuilder ->
+                webHostBuilder
+                    .Configure(Action<IApplicationBuilder> configureApp)
+                    .ConfigureServices(configureServices)
+                    |> ignore)
+        .Build()
+        .Run()
     0
