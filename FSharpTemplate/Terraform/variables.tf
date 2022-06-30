@@ -71,10 +71,15 @@ variable "docker_registry_server_username" {
   type        = string
   description = "Docker Registry Server Username"
 }
+#
+#variable "docker_registry_server_password" {
+#  type        = string
+#  description = "Docker Registry Server Password"
+#}
 
-variable "docker_registry_server_password" {
+variable "docker_registry_resource_group_name" {
   type        = string
-  description = "Docker Registry Server Password"
+  description = "Docker Registry Resource Group Name"
 }
 
 variable "docker_registry_server_url" {

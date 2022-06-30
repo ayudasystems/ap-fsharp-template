@@ -7,21 +7,30 @@ resource "azurerm_windows_web_app" "as" {
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.sp.id
 
-    app_settings = {
-      DOCKER_REGISTRY_SERVER_USERNAME     = var.docker_registry_server_username
-      DOCKER_REGISTRY_SERVER_PASSWORD     = var.docker_registry_server_password
-      DOCKER_REGISTRY_SERVER_URL          = var.docker_registry_server_url
-      DOCKER_CUSTOM_IMAGE_NAME            = "${var.docker_registry_server_url}/${var.docker_container_tag}"
-      WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    }
+  app_settings = {
+    #      DOCKER_REGISTRY_SERVER_USERNAME     = var.docker_registry_server_username
+    #      DOCKER_REGISTRY_SERVER_PASSWORD     = var.docker_registry_server_password
+    DOCKER_REGISTRY_SERVER_URL          = var.docker_registry_server_url
+    DOCKER_CUSTOM_IMAGE_NAME            = "${var.docker_registry_server_url}/${var.docker_container_tag}"
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+  }
 
   site_config {
 
     application_stack {
-      docker_container_name     = var.docker_container_name
-      docker_container_tag      = var.docker_container_tag
+      docker_container_name = var.docker_container_name
+      docker_container_tag  = var.docker_container_tag
     }
 
+    windows_fx_version                            = "DOCKER|${data.azurerm_container_registry.cr.name}/${var.docker_container_tag}"
+#    container_registry_managed_identity_client_id = data.azurerm_user_assigned_identity.uai.principal_id
+#    container_registry_use_managed_identity       = true
+
+  }
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = data.azurerm_user_assigned_identity.uai.principal_id
   }
 
 }
