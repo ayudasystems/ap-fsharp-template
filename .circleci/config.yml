@@ -133,6 +133,8 @@ jobs:
           command: |
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
+            DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
+            DOCKER_CONTAINER_TAG=<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>
             terraform init
             terraform validate
             cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
@@ -140,9 +142,9 @@ jobs:
             azure_subscription_tenant_id = "$AZ_TENANT"
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
             service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
-            docker_container_name = << pipeline.parameters.docker_name >>
+            docker_container_name = $DOCKER_CONTAINER_NAME
             docker_container_registry = $AP_CONTAINER_REGISTRY_HOST
-#            docker_container_tag = << pipeline.parameters.docker_name >>:build-<< pipeline.number >>
+            docker_container_tag = $DOCKER_CONTAINER_TAG
             END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
