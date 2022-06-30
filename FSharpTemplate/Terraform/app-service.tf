@@ -13,6 +13,7 @@ resource "azurerm_linux_web_app" "as" {
     DOCKER_REGISTRY_SERVER_URL          = var.docker_registry_server_url
     DOCKER_CUSTOM_IMAGE_NAME            = "${var.docker_registry_server_url}/${var.docker_container_name}:${var.docker_container_tag}"
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    WEBSITE_HEALTHCHECK_MAXPINGFAILURES = 2
   }
 
   site_config {
