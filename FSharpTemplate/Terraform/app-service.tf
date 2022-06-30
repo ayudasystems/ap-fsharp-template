@@ -18,6 +18,7 @@ resource "azurerm_windows_web_app" "as" {
 
     application_stack {
       docker_container_name     = var.docker_container_name
+      docker_container_tag      = var.docker_container_tag
     }
 
   }

@@ -86,3 +86,8 @@ variable "docker_container_name" {
   type        = string
   description = "Docker Image Name to be used in App Service"
 }
+
+variable "docker_container_tag" {
+  type        = string
+  description = "Docker Container Tag version generated in previous build"
+}
