@@ -30,7 +30,7 @@ resource "azurerm_windows_web_app" "as" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.uai.principal_id]
+    identity_ids = [azurerm_user_assigned_identity.uai.id]
   }
 
 }
