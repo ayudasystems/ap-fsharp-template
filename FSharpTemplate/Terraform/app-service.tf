@@ -7,16 +7,18 @@ resource "azurerm_windows_web_app" "as" {
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.sp.id
 
-  site_config {}
-
   #  app_settings = {
   #    "SOME_KEY" = "some-value"
   #  }
 
-  application_stack = {
-    docker_container_name = var.docker_container_name
-    docker_container_registry = var.docker_container_registry
-    docker_container_tag = "latest"
+  site_config {
+
+    application_stack = {
+      docker_container_name = var.docker_container_name
+      docker_container_registry = var.docker_container_registry
+      docker_container_tag = var.docker_container_tag
+    }
+
   }
 
 }

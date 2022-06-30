@@ -76,3 +76,8 @@ variable "docker_container_registry" {
   type        = string
   description = "Docker Container Registry"
 }
+
+variable "docker_container_tag" {
+  type        = string
+  description = "Docker Container Tag version generated in previous build"
+}
