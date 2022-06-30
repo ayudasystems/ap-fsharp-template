@@ -11,6 +11,7 @@ resource "azurerm_windows_web_app" "as" {
       DOCKER_REGISTRY_SERVER_USERNAME     = var.docker_registry_server_username
       DOCKER_REGISTRY_SERVER_PASSWORD     = var.docker_registry_server_password
       DOCKER_REGISTRY_SERVER_URL          = var.docker_registry_server_url
+      DOCKER_CUSTOM_IMAGE_NAME            = "${var.docker_registry_server_url}/${var.docker_container_name}:${var.docker_container_tag}"
       WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     }
 
