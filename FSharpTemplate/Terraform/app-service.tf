@@ -22,15 +22,15 @@ resource "azurerm_windows_web_app" "as" {
       docker_container_tag  = var.docker_container_tag
     }
 
-    windows_fx_version                            = "DOCKER|${data.azurerm_container_registry.cr.name}/${var.docker_container_tag}"
-#    container_registry_managed_identity_client_id = data.azurerm_user_assigned_identity.uai.principal_id
-#    container_registry_use_managed_identity       = true
+    windows_fx_version = "DOCKER|${azurerm_container_registry.cr.name}/${var.docker_container_tag}"
+    #    container_registry_managed_identity_client_id = azurerm_user_assigned_identity.uai.principal_id
+    #    container_registry_use_managed_identity       = true
 
   }
 
   identity {
     type         = "UserAssigned"
-    identity_ids = data.azurerm_user_assigned_identity.uai.principal_id
+    identity_ids = [azurerm_user_assigned_identity.uai.principal_id]
   }
 
 }

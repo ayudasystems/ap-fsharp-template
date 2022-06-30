@@ -6,16 +6,15 @@ version: 2.1
 orbs:
   terraform: circleci/terraform@3.1.0
 
-parameters:
-  service_name:
-    default: FSharpTemplate
-    type: string
-  docker_name:
-    default: fsharptemplate
-    type: string
-  terraform_env_config_file:
-    default: na-ci.terraform.tfvars
-    type: string
+# Note: These are provided by the ayuda-acr-labs context
+# - AP_CONTAINER_REGISTRY_HOST
+# - AP_CONTAINER_REGISTRY_PASSWORD
+# - AP_CONTAINER_REGISTRY_USERNAME
+
+# Note: These are provided by the ayuda-acr-preview context
+# - AP_CONTAINER_REGISTRY_HOST
+# - AP_CONTAINER_REGISTRY_PASSWORD
+# - AP_CONTAINER_REGISTRY_USERNAME
 
 # Note: These are provided by the ayuda-acr context
 # - AP_CONTAINER_REGISTRY_HOST
@@ -25,14 +24,20 @@ parameters:
 # Note: These are provided by the ap-fsharp-template-resource-credentials-labs context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+# - DOCKER_REGISTRY_RESOURCE_GROUP_NAME
+# - CONTAINER_REGISTRY_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-preview context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+# - DOCKER_REGISTRY_RESOURCE_GROUP_NAME
+# - CONTAINER_REGISTRY_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-cloud context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+# - DOCKER_REGISTRY_RESOURCE_GROUP_NAME
+# - CONTAINER_REGISTRY_NAME
 
 # Note: These are provided by the az-resources-labs context
 # - RESOURCE_GROUP_NAME
@@ -44,11 +49,24 @@ parameters:
 # - SERVICE_PLAN_NAME
 # - AZ_SUBSCRIPTION_ID
 
-# Note: These are provided by the az-resources context
-# - AZ_TENANT
+# Note: These are provided by the az-resources-cloud context
 # - RESOURCE_GROUP_NAME
 # - SERVICE_PLAN_NAME
 # - AZ_SUBSCRIPTION_ID
+
+# Note: These are provided by the az-resources context
+# - AZ_TENANT
+
+parameters:
+  service_name:
+    default: FSharpTemplate
+    type: string
+  docker_name:
+    default: fsharptemplate
+    type: string
+  terraform_env_config_file:
+    default: na-ci.terraform.tfvars
+    type: string
 
 # Define the jobs for the current project.
 jobs:
@@ -134,7 +152,7 @@ jobs:
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
-            DOCKER_CONTAINER_TAG=<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>
+            DOCKER_CONTAINER_TAG=<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>                     
             terraform init
             terraform validate
             cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
@@ -143,36 +161,37 @@ jobs:
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
             service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
             docker_registry_server_username = "$AP_CONTAINER_REGISTRY_USERNAME"
-            docker_registry_server_password = "$AP_CONTAINER_REGISTRY_PASSWORD"
+            docker_registry_resource_group_name = "$DOCKER_REGISTRY_RESOURCE_GROUP_NAME"
+#            docker_registry_server_password = "$AP_CONTAINER_REGISTRY_PASSWORD"
             docker_registry_server_url = "https://$AP_CONTAINER_REGISTRY_HOST"
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
             END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_container_registry.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_container_registry.cr /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$DOCKER_REGISTRY_RESOURCE_GROUP_NAME/providers/Microsoft.ContainerRegistry/registries/$CONTAINER_REGISTRY_NAME
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
 
 workflows:
   deploy_infrastructure:
     jobs:
-#      - build
-#      - build_image:
-#          context:
-#              - ayuda-acr
-#          requires:
-#            - build
-#      - push_image:
-#          context:
-#            - ayuda-acr
-#          requires:
-#            - build_image
-      - terraform-single-job-labs:
-#          requires:
-#            - push_image
+      - build
+      - build_image:
+          context:
+              - ayuda-acr
+          requires:
+            - build
+      - push_image:
           context:
             - ayuda-acr
+          requires:
+            - build_image
+      - terraform-single-job-labs:
+          requires:
+            - push_image
+          context:
+            - ayuda-acr-labs
             - az-resources
             - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
