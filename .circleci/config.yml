@@ -142,8 +142,7 @@ jobs:
             service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
             docker_container_name = << pipeline.parameters.docker_name >>
             docker_container_registry = $AP_CONTAINER_REGISTRY_HOST
-            docker_container_tag = << pipeline.parameters.docker_name >>:build-<< pipeline.number >>
-            
+#            docker_container_tag = << pipeline.parameters.docker_name >>:build-<< pipeline.number >>
             END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME            
@@ -153,20 +152,20 @@ jobs:
 workflows:
   deploy_infrastructure:
     jobs:
-      - build
-      - build_image:
-          context:
-              - ayuda-acr
-          requires:
-            - build
-      - push_image:
-          context:
-            - ayuda-acr
-          requires:
-            - build_image
+#      - build
+#      - build_image:
+#          context:
+#              - ayuda-acr
+#          requires:
+#            - build
+#      - push_image:
+#          context:
+#            - ayuda-acr
+#          requires:
+#            - build_image
       - terraform-single-job-labs:
-          requires:
-            - push_image
+#          requires:
+#            - push_image
           context:
             - ayuda-acr
             - az-resources
