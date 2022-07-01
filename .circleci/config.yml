@@ -71,9 +71,9 @@ parameters:
 # Define the jobs for the current project.
 jobs:
   build:
-    docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0-windowsservercore-ltsc2019
-    resource_class: small
+    machine:
+      image: 'windows-server-2019-gui-current'
+    resource_class: medium
     steps:
       - checkout
       - run:
