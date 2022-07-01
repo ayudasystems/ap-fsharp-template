@@ -96,7 +96,6 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Docker login
           command: echo $AP_CONTAINER_REGISTRY_PASSWORD | docker login $AP_CONTAINER_REGISTRY_HOST -u $AP_CONTAINER_REGISTRY_USERNAME --password-stdin
