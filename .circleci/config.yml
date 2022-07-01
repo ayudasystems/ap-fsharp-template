@@ -72,7 +72,7 @@ parameters:
 jobs:
   build:
     machine:
-      image: 'windows-server-2019-gui-current'
+      image: 'windows-server-2022-gui-current'
     resource_class: medium
     steps:
       - checkout
