@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,6 +29,7 @@
       <Content Include="Terraform\eu-uat.terraform.tfvars" />
       <Content Include="Terraform\eu.terraform.tfvars" />
       <Content Include="Terraform\na-ci.terraform.tfvars" />
+      <Content Include="Terraform\local.terraform.tfvars" />
       <Content Include="Terraform\variables.tf" />
     </ItemGroup>
 

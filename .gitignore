@@ -3,3 +3,6 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+/FSharpTemplate/Terraform/*.hcl
+/FSharpTemplate/Terraform/*.info
+/FSharpTemplate/Terraform/*.tfstate

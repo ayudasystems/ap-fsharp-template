@@ -67,7 +67,7 @@ variable "service_principal_password" {
   description = "Azure Service Principal Password"
 }
 
-variable "docker_registry_server_username" {
+variable "docker_registry_server_name" {
   type        = string
   description = "Docker Registry Server Username"
 }
@@ -95,4 +95,9 @@ variable "docker_container_name" {
 variable "docker_container_tag" {
   type        = string
   description = "Docker Container Tag version generated in previous build"
+}
+
+variable "user_assigned_identity_name" {
+  type        = string
+  description = "Managed Identity to provide access to Terraform for pulling docker images from Container Registry"
 }
