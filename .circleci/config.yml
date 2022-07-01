@@ -71,9 +71,9 @@ parameters:
 # Define the jobs for the current project.
 jobs:
   build:
-    machine:
-      image: 'windows-server-2022-gui-current'
-    resource_class: medium
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:6.0
+    resource_class: small
     steps:
       - checkout
       - run:
