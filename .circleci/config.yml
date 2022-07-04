@@ -167,8 +167,8 @@ workflows:
 #          requires:
 #            - build
       - terraform-single-job-labs:
-          requires:
-            - build_push_image
+#          requires:
+#            - build_push_image
           context:
             - ayuda-acr-labs
             - az-resources
