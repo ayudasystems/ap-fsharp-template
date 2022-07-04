@@ -90,7 +90,7 @@ jobs:
 #  integration-tests:
 #    ToDo
 
-  build_image:
+  build_push_image:
     machine:
       image: 'windows-server-2022-gui:current'
     resource_class: windows.medium
@@ -105,22 +105,6 @@ jobs:
       - run:
           name: Save Docker image
           command: docker save -o << pipeline.parameters.docker_name >>_latest.tar "<< pipeline.parameters.docker_name >>:build-<< pipeline.number >>"
-      - persist_to_workspace:
-          root: .
-          paths:
-            - << pipeline.parameters.docker_name >>_latest.tar
-
-  push_image:
-    machine:
-      image: 'windows-server-2022-gui:current'
-    resource_class: windows.medium
-    steps:
-      - attach_workspace:
-          at: ./
-      - setup_remote_docker
-      - run:
-          name: Docker login
-          command: echo $AP_CONTAINER_REGISTRY_PASSWORD | docker login $AP_CONTAINER_REGISTRY_HOST -u $AP_CONTAINER_REGISTRY_USERNAME --password-stdin
       - run:
           name: Load Docker image
           command: docker load -i ./<< pipeline.parameters.docker_name >>_latest.tar
@@ -176,16 +160,12 @@ workflows:
   deploy_infrastructure:
     jobs:
       - build
-      - build_image:
+      - build_push_image:
           context:
               - ayuda-acr
+              - ayuda-acr-labs
           requires:
             - build
-      - push_image:
-          context:
-            - ayuda-acr-labs
-          requires:
-            - build_image
       - terraform-single-job-labs:
           requires:
             - push_image
