@@ -111,8 +111,8 @@ jobs:
             - << pipeline.parameters.docker_name >>_latest.tar
 
   push_image:
-    docker:
-      - image: 'windows-server-2022-gui:current'
+    machine:
+      image: 'windows-server-2022-gui:current'
     resource_class: windows.medium
     steps:
       - attach_workspace:
