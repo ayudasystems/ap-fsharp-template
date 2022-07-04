@@ -112,8 +112,8 @@ jobs:
 
   push_image:
     docker:
-      - image: cimg/base:2021.04
-    resource_class: small
+      - image: 'windows-server-2022-gui:current'
+    resource_class: windows.medium
     steps:
       - attach_workspace:
           at: ./
