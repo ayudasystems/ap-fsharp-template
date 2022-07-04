@@ -31,6 +31,7 @@
       <Content Include="Terraform\eu.terraform.tfvars" />
       <Content Include="Terraform\na-ci.terraform.tfvars" />
       <Content Include="Terraform\variables.tf" />
+      <Content Include="Terraform\log-analytics-workspace.tf" />
     </ItemGroup>
 
     <ItemGroup>

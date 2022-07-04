@@ -13,6 +13,11 @@ resource "azurerm_linux_web_app" "as" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     WEBSITE_HEALTHCHECK_MAXPINGFAILURES = 2
     APPINSIGHTS_INSTRUMENTATIONKEY = "${azurerm_application_insights.ai.instrumentation_key}"
+    APPLICATIONINSIGHTS_CONNECTION_STRING = "${azurerm_application_insights.ai.connection_string}"
+    ApplicationInsightsAgent_EXTENSION_VERSION = "~3"
+    DiagnosticServices_EXTENSION_VERSION = "~3"
+    APPINSIGHTS_PROFILERFEATURE_VERSION = "1.0.0"
+    APPINSIGHTS_SNAPSHOTFEATURE_VERSION = "1.0.0"
   }
 
   site_config {
