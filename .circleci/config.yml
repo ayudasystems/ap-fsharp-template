@@ -92,7 +92,7 @@ jobs:
 
   build_image:
     machine:
-      image: 'windows-server-2019-gui-current' 
+      image: 'windows-server-2022-gui:edge'
     resource_class: medium
     steps:
       - checkout
