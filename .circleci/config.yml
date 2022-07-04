@@ -71,10 +71,6 @@ parameters:
 # Define the jobs for the current project.
 jobs:
   build:
-    filters:
-      branches:
-        only:
-          - master
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
     resource_class: small
@@ -181,7 +177,11 @@ jobs:
 workflows:
   deploy_infrastructure:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only:
+                - master
       - build_image:
           context:
             - ayuda-acr
