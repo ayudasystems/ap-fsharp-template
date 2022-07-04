@@ -21,6 +21,7 @@
       <Content Include="Terraform\container-registry.tf" />
       <Content Include="Terraform\role-assignment.tf" />
       <Content Include="Terraform\app-service-plan.tf" />
+      <Content Include="Terraform\application-insights.tf" />
       <Content Include="Terraform\main.tf" />
       <Content Include="Terraform\output.tf" />
       <Content Include="Terraform\providers.tf" />
@@ -29,7 +30,6 @@
       <Content Include="Terraform\eu-uat.terraform.tfvars" />
       <Content Include="Terraform\eu.terraform.tfvars" />
       <Content Include="Terraform\na-ci.terraform.tfvars" />
-      <Content Include="Terraform\local.terraform.tfvars" />
       <Content Include="Terraform\variables.tf" />
     </ItemGroup>
 
