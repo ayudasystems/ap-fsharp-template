@@ -1,7 +1,7 @@
 # terraform/app-service.tf
 
 # Create the web app, pass in the App Service Plan ID, and deploy code from a public GitHub repo
-resource "azurerm_windows_web_app" "as" {
+resource "azurerm_linux_web_app" "as" {
   name                = "${var.service_name}${var.environment_suffix}" // TODO: test deployment over deployment with the same name. Otherwise add  "${var.service_name}${var.environment_suffix}${random_integer.ri.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -17,13 +17,8 @@ resource "azurerm_windows_web_app" "as" {
   site_config {
 
     application_stack {
-      #      docker_image     = "${var.docker_registry_server_url}/${var.docker_container_name}"
-      #      docker_image_tag = var.docker_container_tag
-      #      docker_container_name     = "${var.docker_registry_server_url}/${var.docker_container_name}"
-      #      docker_container_name     = "${var.service_name}${var.environment_suffix}"
-      docker_container_name     = "${var.docker_registry_server_name}/${var.docker_container_name}"
-      docker_container_registry = var.docker_registry_server_url
-      docker_container_tag      = var.docker_container_tag
+      docker_image     = "${var.docker_registry_server_url}/${var.docker_container_name}"
+      docker_image_tag = var.docker_container_tag
     }
 
     container_registry_managed_identity_client_id = azurerm_user_assigned_identity.uai.client_id
