@@ -159,16 +159,16 @@ jobs:
 workflows:
   deploy_infrastructure:
     jobs:
-#      - build
-#      - build_push_image:
-#          context:
-#              - ayuda-acr
-#              - ayuda-acr-labs
-#          requires:
-#            - build
+      - build
+      - build_push_image:
+          context:
+              - ayuda-acr
+              - ayuda-acr-labs
+          requires:
+            - build
       - terraform-single-job-labs:
-#          requires:
-#            - build_push_image
+          requires:
+            - build_push_image
           context:
             - ayuda-acr-labs
             - az-resources
