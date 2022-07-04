@@ -11,8 +11,7 @@ FROM build AS publish
 RUN dotnet publish "FSharpTemplate/FSharpTemplate.fsproj" -c Release -o /app/publish
 
 EXPOSE 80 9000
-#FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-windowsservercore-ltsc2019
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "FSharpTemplate.dll"]
