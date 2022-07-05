@@ -17,13 +17,24 @@ resource "azurerm_storage_container" "lsc" {
   storage_account_name = azurerm_storage_account.sa.name
 }
 
+# Create rotation resource
+resource "time_rotating" "main" {
+  rotation_rfc3339 = null
+  rotation_years   = 1
+
+  triggers = {
+    end_date = null
+    years    = 1
+  }
+}
+
 # Create Log Storage Blob Container SAS
 data "azurerm_storage_account_blob_container_sas" "lscsas" {
   connection_string = azurerm_storage_account.sa.primary_connection_string
   container_name    = azurerm_storage_container.lsc.name
   https_only        = true
-  start             = "2022-07-05"
-  expiry            = "2023-07-05"
+  start             = timestamp()
+  expiry            = time_rotating.main.rotation_rfc3339
   permissions {
     read   = true
     add    = true
