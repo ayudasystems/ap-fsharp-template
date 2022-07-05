@@ -44,13 +44,13 @@ resource "azurerm_linux_web_app" "as" {
       azure_blob_storage {
         level             = "Information"
         retention_in_days = "30"
-        sas_url           = sas_url=format("https://${azurerm_storage_account.sa.name}.blob.core.windows.net/${azurerm_storage_container.lsc.name}%s", data.azurerm_storage_account_blob_container_sas.lscsas.sas)
+        sas_url           = format("https://${azurerm_storage_account.sa.name}.blob.core.windows.net/${azurerm_storage_container.lsc.name}%s", data.azurerm_storage_account_blob_container_sas.lscsas.sas)
       }
     }
     http_logs {
       azure_blob_storage {
         retention_in_days = "30"
-        sas_url           = sas_url=format("https://${azurerm_storage_account.sa.name}.blob.core.windows.net/${azurerm_storage_container.lsc.name}%s", data.azurerm_storage_account_blob_container_sas.lscsas.sas)
+        sas_url           = format("https://${azurerm_storage_account.sa.name}.blob.core.windows.net/${azurerm_storage_container.lsc.name}%s", data.azurerm_storage_account_blob_container_sas.lscsas.sas)
       }
     }
   }
