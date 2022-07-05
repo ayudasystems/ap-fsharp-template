@@ -13,7 +13,7 @@ resource "azurerm_storage_account" "sa" {
 
 # Create Log Storage Blob Container
 resource "azurerm_storage_container" "lsc" {
-  name                 = "${var.service_name}${var.environment_suffix}-logs"
+  name                 = "${var.docker_container_name}${var.environment_suffix_lowercase}-logs"
   storage_account_name = azurerm_storage_account.sa.name
 }
 
