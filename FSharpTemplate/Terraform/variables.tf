@@ -27,7 +27,7 @@ variable "environment_suffix" {
 variable "environment_suffix_lowercase" {
   default     = "naci"
   type        = string
-  description = "Environment Suffix used in storage account name. E.g.: Ayuda Dev -> -NA-CI, Ayuda Preview -> -EU-UAT"
+  description = "Environment Suffix used in storage account name. E.g.: Ayuda Dev -> naci, Ayuda Preview -> euuat"
 }
 
 variable "resource_group_name" {
