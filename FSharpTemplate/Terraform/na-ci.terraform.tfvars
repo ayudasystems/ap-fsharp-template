@@ -2,7 +2,7 @@
 
 environment                  = "Ayuda Dev"
 environment_suffix           = "-NA-CI"
-environment_suffix_lowercase = "-na-ci"
+environment_suffix_lowercase = "naci"
 resource_group_name          = "ayudalabs-na-01"
 resource_group_location      = "North Central US"
 service_plan_name            = "ayudalabs-na-ci-serviceplan"
