@@ -13,6 +13,7 @@ let configureApp (app : IApplicationBuilder) =
        
 let configureServices (services : IServiceCollection) =
     services.AddGiraffe() |> ignore
+    services.AddApplicationInsightsTelemetry() |> ignore
            
 [<EntryPoint>]
 let main args =
