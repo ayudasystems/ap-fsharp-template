@@ -2,7 +2,7 @@
 
 # Create Storage Account for the project
 resource "azurerm_storage_account" "sa" {
-  name                     = "${var.service_name}${var.environment_suffix}"
+  name                     = "${var.docker_container_name}${var.environment_suffix_lowercase}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
