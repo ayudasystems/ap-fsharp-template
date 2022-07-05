@@ -32,6 +32,7 @@
       <Content Include="Terraform\na-ci.terraform.tfvars" />
       <Content Include="Terraform\variables.tf" />
       <Content Include="Terraform\log-analytics-workspace.tf" />
+      <Content Include="Terraform\storage-account.tf" />
     </ItemGroup>
 
     <ItemGroup>
