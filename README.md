@@ -14,6 +14,10 @@ The project requires the following to be installed on your machine:
 
 Clone this repository
 
+## Initialize the application
+In the terminal, go to the root directory of the solution and run the following command
+`dotnet fsi init.fsx`
+
 ## Run the application
 
 In `Rider`, click `arrow`(run) or `bug`(debug) on the top right corner
