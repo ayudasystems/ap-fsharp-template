@@ -170,7 +170,7 @@ jobs:
             export ARM_CLIENT_ID=$AZ_SERVICE_PRINCIPAL_APP_ID
             export ARM_CLIENT_SECRET=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD
             export ARM_TENANT_ID=$AZ_TENANT
-            terraform init -backend-config=/home/jimmyc/projects/broadsign/ap-fsharp-template/.circleci/config.yml
+            terraform init -backend-config=/tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
             terraform validate
             cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
