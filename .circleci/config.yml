@@ -199,6 +199,14 @@ jobs:
             if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
 
 workflows:
+  pull_requests:
+    jobs:
+      - build
+      - build_image:
+          context:
+            - ayuda-acr
+          requires:
+            - build
   deploy_infrastructure:
     jobs:
       - build:
