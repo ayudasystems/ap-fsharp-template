@@ -202,9 +202,14 @@ workflows:
             - ayuda-acr
           requires:
             - build
-      - terraform-single-job-labs:
+      - push_image:
+          context:
+            - ayuda-acr-labs
           requires:
             - build_image
+      - terraform-single-job-labs:
+          requires:
+            - push_image
           context:
             - ayuda-acr-labs
             - az-resources
