@@ -43,6 +43,9 @@ orbs:
 # - RESOURCE_GROUP_NAME
 # - SERVICE_PLAN_NAME
 # - AZ_SUBSCRIPTION_ID
+# - AZURE_BACKEND_RESOURCE_GROUP_NAME
+# - AZURE_BACKEND_STORAGE_ACCOUNT_NAME
+# - AZURE_BACKEND_TERRAFORM_KEY
 
 # Note: These are provided by the az-resources-preview context
 # - RESOURCE_GROUP_NAME
@@ -66,6 +69,9 @@ parameters:
     type: string
   terraform_env_config_file:
     default: na-ci.terraform.tfvars
+    type: string
+  terraform_backend_config_file:
+    default: backend.hcl
     type: string
 
 # Define the jobs for the current project.
@@ -151,9 +157,20 @@ jobs:
           command: |
             cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
+            TERRAFORM_BACKEND_CONFIG_FILE=<< pipeline.parameters.terraform_backend_config_file >>
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
-            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>                     
-            terraform init
+            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>
+            cat > /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE \<< END
+            resource_group_name  = "$AZURE_BACKEND_RESOURCE_GROUP_NAME"
+            storage_account_name = "$AZURE_BACKEND_STORAGE_ACCOUNT_NAME"
+            container_name       = "$AZURE_BACKEND_RESOURCE_GROUP_NAME"
+            key                  = "<< pipeline.parameters.docker_name >>.$AZURE_BACKEND_TERRAFORM_KEY"
+            END
+            export ARM_SUBSCRIPTION_ID=$AZ_SUBSCRIPTION_ID
+            export ARM_CLIENT_ID=$AZ_SERVICE_PRINCIPAL_APP_ID
+            export ARM_CLIENT_SECRET=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+            export ARM_TENANT_ID=$AZ_TENANT
+            terraform init -backend-config=/home/jimmyc/projects/broadsign/ap-fsharp-template/.circleci/config.yml
             terraform validate
             cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
