@@ -196,11 +196,7 @@ workflows:
     unless:
       equal: [ "master", << pipeline.git.branch >> ]
     jobs:
-      - build:
-          filters:
-            branches:
-              only:
-                - master
+      - build
       - build_image:
           context:
             - ayuda-acr
