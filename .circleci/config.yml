@@ -192,7 +192,23 @@ jobs:
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
 
 workflows:
+  pull-request:
+    unless:
+      equal: [ "master", << pipeline.git.branch >> ]
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+      - build_image:
+          context:
+            - ayuda-acr
+          requires:
+            - build
   deploy_infrastructure:
+    when:
+      equal: [ "main", << pipeline.git.branch >> ]
     jobs:
       - build:
           filters:
