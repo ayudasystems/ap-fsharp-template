@@ -202,6 +202,15 @@ workflows:
             - ayuda-acr
           requires:
             - build
+      - terraform-single-job-labs:
+          requires:
+            - push_image
+          context:
+            - ayuda-acr-labs
+            - az-resources
+            - az-resources-labs
+            - ap-fsharp-template-resource-credentials-labs
+
   deploy_infrastructure:
     when:
       equal: [ "main", << pipeline.git.branch >> ]
