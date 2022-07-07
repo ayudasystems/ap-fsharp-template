@@ -168,14 +168,14 @@ jobs:
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
             user_assigned_identity_name = "$AP_USER_ASSIGNED_ENTITY"
-            END            
+            END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME          
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME                      
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_linux_web_app.as /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/sites/$SERVICE_NAME$ENVIRONMENT_SUFFIX/appServices
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_application_insights.ai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Insights/components/$SERVICE_NAME$ENVIRONMENT_SUFFIX
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_log_analytics_workspace.law /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.OperationalInsights/workspaces/$SERVICE_NAME$ENVIRONMENT_SUFFIX-law            
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME                                  
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_container_registry.cr /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$DOCKER_REGISTRY_RESOURCE_GROUP_NAME/providers/Microsoft.ContainerRegistry/registries/$AP_CONTAINER_REGISTRY_USERNAME
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_user_assigned_identity.uai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$AP_USER_ASSIGNED_ENTITY
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_linux_web_app.as /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/sites/$SERVICE_NAME$ENVIRONMENT_SUFFIX/appServices 2>/dev/null
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_application_insights.ai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Insights/components/$SERVICE_NAME$ENVIRONMENT_SUFFIX 2>/dev/null
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_log_analytics_workspace.law /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.OperationalInsights/workspaces/$SERVICE_NAME$ENVIRONMENT_SUFFIX-law 2>/dev/null            
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
       - persist_to_workspace:
@@ -184,7 +184,6 @@ jobs:
             - ./<< pipeline.parameters.service_name >>/Terraform/<< pipeline.parameters.terraform_env_config_file >>
 
   service-health-check:
-    working_directory: /tmp/project
     docker:
       - image: cimg/base:2021.04
     resource_class: small
@@ -194,7 +193,7 @@ jobs:
       - run:
           name: service deployment health check
           command: |
-            ENVIRONMENT_SUFFIX=`cat ./<< pipeline.parameters.terraform_env_config_file >> | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
+            ENVIRONMENT_SUFFIX=`cat /tmp/project/<< pipeline.parameters.service_name >>/Terraform/<< pipeline.parameters.terraform_env_config_file >> | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
             OK_200=`curl -w ' %{http_code}' "https://<< pipeline.parameters.docker_name >>$ENVIRONMENT_SUFFIX.azurewebsites.net/api/health" | awk '{print $2}'`
             if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
 
