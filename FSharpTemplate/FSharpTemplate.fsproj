@@ -13,28 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Terraform\assets" />
-      <Content Include="Terraform\.terraform\providers\registry.terraform.io\hashicorp\random\3.1.3\windows_amd64\terraform-provider-random_v3.1.3_x5.exe" />
-      <Content Include="Terraform\.terraform\providers\registry.terraform.io\hashicorp\azurerm\3.0.2\windows_amd64\terraform-provider-azurerm_v3.0.2_x5.exe" />
-      <Content Include="Terraform\app-service.tf" />
-      <Content Include="Terraform\assigned-identity.tf" />
-      <Content Include="Terraform\container-registry.tf" />
-      <Content Include="Terraform\role-assignment.tf" />
-      <Content Include="Terraform\app-service-plan.tf" />
-      <Content Include="Terraform\application-insights.tf" />
-      <Content Include="Terraform\main.tf" />
-      <Content Include="Terraform\output.tf" />
-      <Content Include="Terraform\providers.tf" />
-      <Content Include="Terraform\resource-group.tf" />
-      <Content Include="Terraform\terraform.tfvars" />
-      <Content Include="Terraform\eu-uat.terraform.tfvars" />
-      <Content Include="Terraform\eu.terraform.tfvars" />
-      <Content Include="Terraform\na-ci.terraform.tfvars" />
-      <Content Include="Terraform\variables.tf" />
-      <Content Include="Terraform\log-analytics-workspace.tf" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Giraffe" Version="6.0.0" />
       <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
