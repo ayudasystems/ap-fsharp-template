@@ -185,6 +185,7 @@ jobs:
       - image: cimg/base:2021.04
     resource_class: small
     steps:
+      - checkout
       - run:
           name: service deployment health check
           command: |
