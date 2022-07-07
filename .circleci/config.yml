@@ -184,7 +184,7 @@ jobs:
             - << pipeline.parameters.terraform_env_config_file >>
 
   service-health-check:
-    working_directory: /tmp/project
+    working_directory: /
     docker:
       - image: cimg/base:2021.04
     resource_class: small
@@ -197,7 +197,7 @@ jobs:
           command: |
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
-            ENVIRONMENT_SUFFIX=`cat /$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
+            ENVIRONMENT_SUFFIX=`cat ./$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
             OK_200=`curl -w ' %{http_code}' "https://$DOCKER_CONTAINER_NAME$ENVIRONMENT_SUFFIX.azurewebsites.net/api/health" | awk '{print $2}'`
             if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
 
