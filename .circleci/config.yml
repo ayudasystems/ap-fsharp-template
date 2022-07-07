@@ -181,7 +181,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - << pipeline.parameters.terraform_env_config_file >>
+            - ./<< pipeline.parameters.service_name >>/Terraform/<< pipeline.parameters.terraform_env_config_file >>
 
   service-health-check:
     working_directory: /
