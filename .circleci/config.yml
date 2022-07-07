@@ -149,13 +149,15 @@ jobs:
       - run:
           name: terraform plan & apply infrastructure
           command: |
-            cd '/tmp/project/<< pipeline.parameters.service_name >>/Terraform'
+            SERVICE_NAME=<< pipeline.parameters.service_name >>
+            cd '/tmp/project/$SERVICE_NAME/Terraform'
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
+            ENVIRONMENT_SUFFIX=`cat /tmp/project/SERVICE_NAME/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
-            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>                     
+            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>            
             terraform init
             terraform validate
-            cat >> /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
+            cat >> /tmp/project/$SERVICE_NAME/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
             azure_subscription_tenant_id = "$AZ_TENANT"
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
@@ -166,15 +168,45 @@ jobs:
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
             user_assigned_identity_name = "$AP_USER_ASSIGNED_ENTITY"
-            END
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME
+            END            
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME          
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME                      
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_linux_web_app.as /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/sites/$SERVICE_NAME$ENVIRONMENT_SUFFIX/appServices 2> /dev/null
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_application_insights.ai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Insights/components/$SERVICE_NAME$ENVIRONMENT_SUFFIX 2> /dev/null
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_log_analytics_workspace.law /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.OperationalInsights/workspaces/$SERVICE_NAME$ENVIRONMENT_SUFFIX-law 2> /dev/null            
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_container_registry.cr /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$DOCKER_REGISTRY_RESOURCE_GROUP_NAME/providers/Microsoft.ContainerRegistry/registries/$AP_CONTAINER_REGISTRY_USERNAME
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_user_assigned_identity.uai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$AP_USER_ASSIGNED_ENTITY
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
 
+  service-health-check:
+    working_directory: /tmp/project
+    docker:
+      - image: cimg/base:2021.04
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: ./
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: service deployment health check
+          command: |
+            TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
+            DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
+            ENVIRONMENT_SUFFIX=`cat /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
+            OK_200=`curl -w ' %{http_code}' "https://$DOCKER_CONTAINER_NAME$ENVIRONMENT_SUFFIX.azurewebsites.net/api/health" | awk '{print $2}'`
+            if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
+
 workflows:
+  pull_requests:
+    jobs:
+      - build
+      - build_image:
+          context:
+            - ayuda-acr
+          requires:
+            - build
   deploy_infrastructure:
     jobs:
       - build:
@@ -200,3 +232,4 @@ workflows:
             - az-resources
             - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
+      - service-health-check
