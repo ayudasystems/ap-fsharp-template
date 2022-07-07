@@ -41,7 +41,7 @@ in command line execute the following commands in the base path.
 `dotnet run`
 
 ## Terraform organisation
-Folder: /FSharpTemplate/Terraform
+Folder: /Terraform
 * main.tf: configures the resources that make up your infrastructure.
 * providers.tf: declares cloud provider to deploy and credentials
 * variables.tf: declares input variables for your dev and prod environment prefixes, and the AWS region to deploy to.
