@@ -53,7 +53,7 @@ Azure Resources
   (https://www.terraform.io/cli/commands/plan)
 * `terraform apply`: command executes the actions proposed in a Terraform plan
   (https://www.terraform.io/cli/commands/apply)
-* `terraform destroy`: command is a convenient way to destroy all remote objects managed by a particular Terraform configuration.
+* `terraform destroy`: DO NOT USE!!! command is a convenient way to destroy all remote objects managed by a particular Terraform configuration. It can cause platform deletes, try avoiding its use.  
   (https://www.terraform.io/cli/commands/destroy)
 
 ## CircleCI
