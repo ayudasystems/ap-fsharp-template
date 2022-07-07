@@ -15,8 +15,21 @@ The project requires the following to be installed on your machine:
 Clone this repository
 
 ## Initialize the application
-In the terminal, go to the root directory of the solution and run the following command
-`dotnet fsi init.fsx`
+
+You can initialize the application either by running a script in the terminal or by creating new project in Rider
+* In the `terminal`, go to the root directory of the solution and run the following command
+`.\init.cmd`
+or
+`.\init.cmd [Solution name] [Project name] [Solution directory]`
+
+* In `Rider`, 
+  1. Click `File` -> `New` -> `More Templates`. 
+  2. Click `Install Template...` and choose the base path of the template. 
+  3. Click `Reload`.
+  4. Find and click the `Broadsign FSharp Application` template in the left menu.
+  5. Enter Solution name, Project name and Solution directory.
+  6. Check `Put solution and project in the same directory`
+  7. Click `Create`
 
 ## Run the application
 
