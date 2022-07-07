@@ -15,7 +15,7 @@ The project requires the following to be installed on your machine:
 ## Set up a new Service
 * Create a new repository in GitHub assigning `ap-fsharp-template`.
 * Checkout new repository locally
-* Create a new project in the repository with XXXXX template and assign Service Name in the template.
+* Create a new project in the repository with `Broadsign FSharp Application` template and assign Service Name in the template.
 * Commit and push changes
 * Set up new project using included config in CircleCI
 Clone this repository
