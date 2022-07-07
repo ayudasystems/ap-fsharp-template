@@ -214,7 +214,7 @@ workflows:
 
   deploy_infrastructure:
     when:
-      equal: [ "main", << pipeline.git.branch >> ]
+      equal: [ "master", << pipeline.git.branch >> ]
     jobs:
       - build:
           filters:
