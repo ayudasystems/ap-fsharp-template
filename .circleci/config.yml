@@ -201,7 +201,11 @@ jobs:
 workflows:
   pull_requests:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
       - build_image:
           context:
             - ayuda-acr
@@ -232,4 +236,6 @@ workflows:
             - az-resources
             - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
-      - service-health-check
+      - service-health-check:
+          requires:
+            - terraform-single-job-labs
