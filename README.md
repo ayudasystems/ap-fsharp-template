@@ -73,4 +73,4 @@ Azure Resources
 ## CircleCI
 * .circleci/config.yml
 * Terraform Orb Documentation
-  https://circleci.com/developer/orbs/orb/circleci/terraform
+https://circleci.com/developer/orbs/orb/circleci/terraform
