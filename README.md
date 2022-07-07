@@ -1,4 +1,4 @@
-# ap-fsharp-template
+# Microservices template
 The microservice fsharp template.
 
 ## Requirements
@@ -8,18 +8,16 @@ The project requires the following to be installed on your machine:
 ## Technologies used
 * `F#`
 * `.Net Core`
-* `Chocolatey`
+* `Terraform`
 
-## Working with it locally
-
-Clone this repository
-
-## Initialize the application
-In the terminal, go to the root directory of the solution and run the following command
-`dotnet fsi init.fsx`
+## Set up a new Service
+* Create a new repository in GitHub assigning `ap-fsharp-template`.
+* Checkout new repository locally
+* Create a new project in the repository with XXXXX template and assign Service Name in the template.
+* Commit and push changes
+* Set up new project using included config in CircleCI
 
 ## Run the application
-
 In `Rider`, click `arrow`(run) or `bug`(debug) on the top right corner
 * If the project does not run in Development environment check the `Run/Debug configurations` on the left of `arrow`
 
@@ -31,15 +29,22 @@ in command line execute the following commands in the base path.
 ## Terraform organisation
 Folder: /FSharpTemplate/Terraform
 * main.tf: configures the resources that make up your infrastructure.
+* providers.tf: declares cloud provider to deploy and credentials
 * variables.tf: declares input variables for your dev and prod environment prefixes, and the AWS region to deploy to.
 * terraform.tfvars: defines your region and environment prefixes. Terraform automatically loads variable values from any files that end in .tfvars
 * outputs.tf: specifies the website endpoints for your dev and prod buckets.
 * assets: houses your webapp HTML file.
+* <template>.tf: Azure Resources Templates in the cloud provider. Please, check below available resrources. 
 
 Azure Resources
 * resource-group
 * app-service-plan
 * app-service
+* application-insights
+* log-analytic-workspace
+* container-registry
+* assigned-identity
+* role-assignment
 
 ## Terraform Commands
 * `terraform init`: command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times.
@@ -53,21 +58,5 @@ Azure Resources
 
 ## CircleCI
 * .circleci/config.yml
-* Terrafor Orb Documentation
+* Terraform Orb Documentation
 https://circleci.com/developer/orbs/orb/circleci/terraform
-
-## ARM Templates organisation
-Folder: /FSharpTemplate/ARMTemplates
-* artifacts/web.json: child template
-* parent.json: parent template
-* exportedtemplate.json: template exported from resource group
-* first-template.json: first template without resources
-* storage-account.json: template with specific storage account
-* storage-account-reusable.json: added parameter to specify the storage account name
-* parameters.dev.json: dev parameters json file
-* parameters.prod.json: prod parameters json file
-
-Azure resources
-* storage account
-* app service plan
-* web app
