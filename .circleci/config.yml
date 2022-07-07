@@ -184,12 +184,14 @@ jobs:
             - ./<< pipeline.parameters.service_name >>/Terraform/<< pipeline.parameters.terraform_env_config_file >>
 
   service-health-check:
+    working_directory: /tmp/project
     docker:
       - image: cimg/base:2021.04
     resource_class: small
     steps:
       - attach_workspace:
-          at: .
+          at: ./
+      - checkout
       - run:
           name: service deployment health check
           command: |
