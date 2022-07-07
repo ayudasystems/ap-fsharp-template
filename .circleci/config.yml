@@ -178,6 +178,10 @@ jobs:
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_user_assigned_identity.uai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$AP_USER_ASSIGNED_ENTITY
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - << pipeline.parameters.terraform_env_config_file >>
 
   service-health-check:
     working_directory: /tmp/project
@@ -193,7 +197,7 @@ jobs:
           command: |
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
-            ENVIRONMENT_SUFFIX=`cat /tmp/project/<< pipeline.parameters.service_name >>/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
+            ENVIRONMENT_SUFFIX=`cat /$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
             OK_200=`curl -w ' %{http_code}' "https://$DOCKER_CONTAINER_NAME$ENVIRONMENT_SUFFIX.azurewebsites.net/api/health" | awk '{print $2}'`
             if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
 
