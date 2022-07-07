@@ -157,7 +157,7 @@ jobs:
             DOCKER_CONTAINER_TAG=build-<< pipeline.number >>            
             terraform init
             terraform validate
-            cat >> /tmp/project/$SERVICE_NAME/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
+            cat >> ./$TERRAFORM_ENV_CONFIG_FILE \<< END
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
             azure_subscription_tenant_id = "$AZ_TENANT"
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
