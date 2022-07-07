@@ -185,10 +185,6 @@ jobs:
       - image: cimg/base:2021.04
     resource_class: small
     steps:
-      - attach_workspace:
-          at: ./
-      - setup_remote_docker
-      - checkout
       - run:
           name: service deployment health check
           command: |
