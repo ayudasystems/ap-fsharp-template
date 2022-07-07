@@ -150,7 +150,7 @@ jobs:
           name: terraform plan & apply infrastructure
           command: |
             SERVICE_NAME=<< pipeline.parameters.service_name >>
-            cd '/tmp/project/$SERVICE_NAME/Terraform'
+            cd /tmp/project/$SERVICE_NAME/Terraform
             TERRAFORM_ENV_CONFIG_FILE=<< pipeline.parameters.terraform_env_config_file >>
             ENVIRONMENT_SUFFIX=`cat /tmp/project/SERVICE_NAME/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
