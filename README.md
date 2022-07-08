@@ -11,23 +11,12 @@ The project requires the following to be installed on your machine:
 * `Terraform`
 
 ## Set up a new Service
-* Create a new repository in GitHub assigning `ap-fsharp-template`.
+* Create a new repository in GitHub from template `ap-fsharp-template`.
 * Checkout new repository locally
-* Create a new project in the repository with `Broadsign FSharp Application` template and assign Service Name in the template.
-  You can create new project by running a script in the terminal or by creating new project in Rider
-  * In the `terminal`, go to the root directory of the solution and run the following command
+* In the `terminal`, go to the root directory of the solution and run the following command
     `.\init.cmd`
     or
-    `.\init.cmd [Solution name] [Project name] [Solution directory]`
-
-  * In `Rider`,
-    1. Click `File` -> `New` -> `More Templates`.
-    2. Click `Install Template...` and choose the base path of the template.
-    3. Click `Reload`.
-    4. Find and click the `Broadsign FSharp Application` template in the left menu.
-    5. Enter Solution name, Project name and Solution directory.
-    6. Check `Put solution and project in the same directory`
-    7. Click `Create`
+    `.\init.cmd [Solution name] [Project name]`
 * Commit and push changes
 * Set up new project using included config in CircleCI
 
