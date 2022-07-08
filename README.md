@@ -43,9 +43,9 @@ Azure Resources
 * application-insights
 * log-analytic-workspace
 * container-registry
-* assigned-identity
-* role-assignment
-
+* assigned-identity 
+  * (User Assigned Identity requires an Azure Role Assignment 'AcrPull' for Container Registry with "Microsoft.ContainerRegistry/registries/pull/read" permissions)
+ 
 ## Terraform Commands
 * `terraform init`: command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times.
   (https://www.terraform.io/cli/commands/init)
