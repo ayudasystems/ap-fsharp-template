@@ -9,7 +9,7 @@ IF not exist %TMP_DIR% (mkdir %TMP_DIR%)
 
 rem Apply template
 dotnet new --install .
-dotnet new sln -n %SOLUTION_NAME% -o %TMP_DIR%\%SOLUTION_NAME%
+dotnet new sln -n %SOLUTION_NAME% -o %TMP_DIR%\%SOLUTION_NAME% --force
 dotnet new broadsign-fsharpapp -n %PROJECT_NAME% -o %TMP_DIR%\%SOLUTION_NAME%
 dotnet sln %TMP_DIR%\%SOLUTION_NAME%\%SOLUTION_NAME%.sln add %TMP_DIR%\%SOLUTION_NAME%\%PROJECT_NAME%\%PROJECT_NAME%.fsproj
 dotnet build %TMP_DIR%\%SOLUTION_NAME%\%SOLUTION_NAME%.sln

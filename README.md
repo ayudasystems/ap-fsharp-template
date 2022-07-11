@@ -14,9 +14,10 @@ The project requires the following to be installed on your machine:
 * Create a new repository in GitHub from template `ap-fsharp-template`.
 * Checkout new repository locally
 * In the `terminal`, go to the root directory of the solution and run the following command
-    `.\init.cmd`
-    or
-    `.\init.cmd [Solution name] [Project name]`
+  * For windows,
+      `.\init.cmd` or `.\init.cmd [Solution name] [Project name]`
+  * For linux/mac, update permission of init.sh by `chmod +x init.sh`, then run
+    `./init.sh` or `./init.sh [Solution name] [Project name]`
 * Commit and push changes
 * Set up new project using included config in CircleCI
 
