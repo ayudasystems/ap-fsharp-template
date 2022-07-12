@@ -11,9 +11,13 @@ The project requires the following to be installed on your machine:
 * `Terraform`
 
 ## Set up a new Service
-* Create a new repository in GitHub assigning `ap-fsharp-template`.
+* Create a new repository in GitHub from template `ap-fsharp-template`.
 * Checkout new repository locally
-* Create a new project in the repository with `Broadsign FSharp Application` template and assign Service Name in the template.
+* In the `terminal`, go to the root directory of the solution and run the following command
+  * For windows,
+      `.\init.cmd` or `.\init.cmd [Solution name] [Project name]`
+  * For linux/mac, update permission of init.sh by `chmod +x init.sh`, then run
+    `./init.sh` or `./init.sh [Solution name] [Project name]`
 * Commit and push changes
 * Set up new project using included config in CircleCI
 
@@ -34,7 +38,7 @@ Folder: /Terraform
 * terraform.tfvars: defines your region and environment prefixes. Terraform automatically loads variable values from any files that end in .tfvars
 * outputs.tf: specifies the website endpoints for your dev and prod buckets.
 * assets: houses your webapp HTML file.
-* <template>.tf: Azure Resources Templates in the cloud provider. Please, check below available resrources. 
+* `<template>.tf`: Azure Resources Templates in the cloud provider. Please, check below available resources.
 
 Azure Resources
 * resource-group
@@ -43,9 +47,9 @@ Azure Resources
 * application-insights
 * log-analytic-workspace
 * container-registry
-* assigned-identity
-* role-assignment
-
+* assigned-identity 
+  * (User Assigned Identity requires an Azure Role Assignment 'AcrPull' for Container Registry with "Microsoft.ContainerRegistry/registries/pull/read" permissions)
+ 
 ## Terraform Commands
 * `terraform init`: command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times.
   (https://www.terraform.io/cli/commands/init)

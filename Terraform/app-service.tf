@@ -2,7 +2,7 @@
 
 # Create the web app, pass in the App Service Plan ID, and deploy code from a public GitHub repo
 resource "azurerm_linux_web_app" "as" {
-  name                = "${var.service_name}${var.environment_suffix}" // TODO: test deployment over deployment with the same name. Otherwise add  "${var.service_name}${var.environment_suffix}${random_integer.ri.result}"
+  name                = "${var.service_name}${var.environment_suffix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.sp.id

@@ -11,33 +11,33 @@ orbs:
 # - AP_CONTAINER_REGISTRY_PASSWORD
 # - AP_CONTAINER_REGISTRY_USERNAME
 # - AP_USER_ASSIGNED_ENTITY
+# - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME
 
 # Note: These are provided by the ayuda-acr-preview context
 # - AP_CONTAINER_REGISTRY_HOST
 # - AP_CONTAINER_REGISTRY_PASSWORD
 # - AP_CONTAINER_REGISTRY_USERNAME
 # - AP_USER_ASSIGNED_ENTITY
+# - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME
 
 # Note: These are provided by the ayuda-acr context
 # - AP_CONTAINER_REGISTRY_HOST
 # - AP_CONTAINER_REGISTRY_PASSWORD
 # - AP_CONTAINER_REGISTRY_USERNAME
 # - AP_USER_ASSIGNED_ENTITY
+# - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-labs context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
-# - DOCKER_REGISTRY_RESOURCE_GROUP_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-preview context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
-# - DOCKER_REGISTRY_RESOURCE_GROUP_NAME
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-cloud context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
 # - AZ_SERVICE_PRINCIPAL_APP_PASSWORD
-# - DOCKER_REGISTRY_RESOURCE_GROUP_NAME
 
 # Note: These are provided by the az-resources-labs context
 # - RESOURCE_GROUP_NAME
@@ -180,7 +180,7 @@ jobs:
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
             service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
             docker_registry_server_name = "$AP_CONTAINER_REGISTRY_USERNAME"
-            docker_registry_resource_group_name = "$DOCKER_REGISTRY_RESOURCE_GROUP_NAME"
+            docker_registry_resource_group_name = "$AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME"
             docker_registry_server_url = "$AP_CONTAINER_REGISTRY_HOST"
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
