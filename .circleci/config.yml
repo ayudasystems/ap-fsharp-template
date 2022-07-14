@@ -221,22 +221,6 @@ workflows:
             - ayuda-acr
           requires:
             - build
-      - push_image:
-          context:
-            - ayuda-acr-labs
-          requires:
-            - build_image
-      - terraform-single-job-labs:
-          requires:
-            - push_image
-          context:
-            - ayuda-acr-labs
-            - az-resources
-            - az-resources-labs
-            - ap-fsharp-template-resource-credentials-labs
-      - service-health-check:
-          requires:
-            - terraform-single-job-labs
 
   deploy_infrastructure:
     when:
