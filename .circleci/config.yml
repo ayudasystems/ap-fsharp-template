@@ -188,6 +188,20 @@ jobs:
             END
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
+  
+  service-health-check:
+    working_directory: /tmp/project
+    docker:
+      - image: cimg/base:2021.04
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: service deployment health check
+          command: |
+            ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/<< pipeline.parameters.terraform_env_config_file >> | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
+            OK_200=`curl -w ' %{http_code}' "https://<< pipeline.parameters.docker_name >>$ENVIRONMENT_SUFFIX.azurewebsites.net/api/health" | awk '{print $2}'`
+            if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
 
 workflows:
   pull-request:
@@ -228,3 +242,6 @@ workflows:
             - az-resources
             - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
+      - service-health-check:
+          requires:
+            - terraform-single-job-labs
