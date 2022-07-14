@@ -186,10 +186,10 @@ jobs:
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
             user_assigned_identity_name = "$AP_USER_ASSIGNED_ENTITY"
             END
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME | true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME | true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_container_registry.cr /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME/providers/Microsoft.ContainerRegistry/registries/$AP_CONTAINER_REGISTRY_USERNAME | true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_user_assigned_identity.uai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$AP_USER_ASSIGNED_ENTITY | true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_container_registry.cr /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME/providers/Microsoft.ContainerRegistry/registries/$AP_CONTAINER_REGISTRY_USERNAME || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_user_assigned_identity.uai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$AP_USER_ASSIGNED_ENTITY || true
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
   
