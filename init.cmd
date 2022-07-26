@@ -3,9 +3,20 @@
 rem Prepare variables and tmp directory
 if [%1]==[] (set /p SOLUTION_NAME="Enter Solution name: ") else (set SOLUTION_NAME=%1)
 if [%2]==[] (set /p PROJECT_NAME="Enter Project name: ") else (set PROJECT_NAME=%2)
+if [%3]==[] (set /p CIRCLECI_STRATEGY="Enter CI/CD Strategy: (<Automatic>,<Approval>) ") else (set CIRCLECI_STRATEGY=%3)
 set CURRENT_DIR=%cd%
 set TMP_DIR=C:\tmp\
 IF not exist %TMP_DIR% (mkdir %TMP_DIR%)
+
+rem Apply ci/cd pipeline strategy
+if "%CIRCLECI_STRATEGY%"=="Approval" (
+    ren .circleci/config-approval.yml circle.yml
+    del .circleci/config-automatic.yml
+)
+else (
+    ren .circleci/config-automatic.yml circle.yml
+    del .circleci/config-approval.yml
+)
 
 rem Apply template
 dotnet new --install .
