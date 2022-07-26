@@ -76,7 +76,7 @@ parameters:
 
 # Define the jobs for the current project.
 jobs:
-  build:
+  build_test:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
     resource_class: small
@@ -217,18 +217,18 @@ workflows:
     unless:
       equal: [ "master", << pipeline.git.branch >> ]
     jobs:
-      - build and test
+      - build_test
       - build_image:
           context:
             - ayuda-acr
           requires:
-            - build and test
+            - build_test
 
   deploy_infrastructure:
     when:
       equal: [ "master", << pipeline.git.branch >> ]
     jobs:
-      - build and test:
+      - build_test:
           filters:
             branches:
               only:
@@ -238,7 +238,7 @@ workflows:
           context:
             - ayuda-acr
           requires:
-            - build and test
+            - build_test
       - push_image:
           name: push_image_labs
           context:
