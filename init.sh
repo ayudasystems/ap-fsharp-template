@@ -26,11 +26,13 @@ TMP_DIR=/tmp/
 
 # Apply ci/cd pipeline strategy
 rm -f .circleci/config.yml
-if [[ $CIRCLECI_STRATEGY -eq "Approval"]];
-    mv ".circleci/config-approval.yml" "circle.yml"
+
+if [ "$CIRCLECI_STRATEGY" = "Approval" ]
+then
+    mv .circleci/config-approval.yml .circleci/config.yml
     rm -f .circleci/config-automatic.yml
 else
-    mv ".circleci/config-automatic.yml" "circle.yml"
+    mv .circleci/config-automatic.yml .circleci/config.yml
     rm -f .circleci/config-approval.yml
 fi
 

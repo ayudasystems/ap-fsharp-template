@@ -9,14 +9,14 @@ set TMP_DIR=C:\tmp\
 IF not exist %TMP_DIR% (mkdir %TMP_DIR%)
 
 rem Apply ci/cd pipeline strategy
-del .circleci/config.yml
-if "%CIRCLECI_STRATEGY%"=="Approval" (
-    ren .circleci/config-approval.yml circle.yml
-    del .circleci/config-automatic.yml
+del .circleci\config.yml
+if %CIRCLECI_STRATEGY%==Approval (
+    ren .circleci\config-approval.yml config.yml
+    del .circleci\config-automatic.yml
 )
 else (
-    ren .circleci/config-automatic.yml circle.yml
-    del .circleci/config-approval.yml
+    ren .circleci\config-automatic.yml config.yml
+    del .circleci\config-approval.yml
 )
 
 rem Apply template
