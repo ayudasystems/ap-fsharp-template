@@ -25,6 +25,7 @@ CURRENT_DIR=$PWD
 TMP_DIR=/tmp/
 
 # Apply ci/cd pipeline strategy
+rm -f .circleci/config.yml
 if [[ $CIRCLECI_STRATEGY -eq "Approval"]];
     mv ".circleci/config-approval.yml" "circle.yml"
     rm -f .circleci/config-automatic.yml
