@@ -1,10 +1,13 @@
-﻿**/.dockerignore
+﻿**/.circleci
+**/.dockerignore
 **/.env
 **/.git
 **/.gitignore
 **/.project
 **/.settings
 **/.toolstarget
+**/.template.config
+**/docs
 **/.vs
 **/.vscode
 **/.idea
@@ -21,5 +24,7 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/init*
+**/Terraform
 LICENSE
 README.md
