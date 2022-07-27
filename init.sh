@@ -14,8 +14,27 @@ then
 else 
   PROJECT_NAME=$2
 fi
+if [[ "$3" == "" ]];
+then
+  echo "Enter CI/CD Strategy: (<Automatic>,<Approval>) "
+  read CIRCLECI_STRATEGY
+else
+  CIRCLECI_STRATEGY=$3
+fi
 CURRENT_DIR=$PWD
 TMP_DIR=/tmp/
+
+# Apply ci/cd pipeline strategy
+rm -f .circleci/config.yml
+
+if [ "$CIRCLECI_STRATEGY" = "Approval" ]
+then
+    mv .circleci/config-approval.yml .circleci/config.yml
+    rm -f .circleci/config-automatic.yml
+else
+    mv .circleci/config-automatic.yml .circleci/config.yml
+    rm -f .circleci/config-approval.yml
+fi
 
 # Apply template
 dotnet new --install .

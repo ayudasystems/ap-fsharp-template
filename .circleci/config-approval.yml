@@ -260,10 +260,15 @@ workflows:
             - terraform_deployment_labs
           context:
             - az-resources-labs
+      - hold:
+          name: require_approval_deploy_preview
+          type: approval
+          requires:
+            - service_health_check_labs
       - push_image:
           name: push_image_preview
           requires:
-            - service_health_check_labs
+            - require_approval_deploy_preview
           context:
             - ayuda-acr-preview
       - terraform_deployment:
@@ -281,10 +286,15 @@ workflows:
             - terraform_deployment_preview
           context:
             - az-resources-preview
+      - hold:
+          name: require_approval_deploy_cloud
+          type: approval
+          requires:
+            - service_health_check_preview 
       - push_image:
           name: push_image_cloud
           requires:
-            - service_health_check_preview
+            - require_approval_deploy_cloud
           context:
             - ayuda-acr
       - terraform_deployment:
