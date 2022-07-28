@@ -223,18 +223,12 @@ workflows:
             - ayuda-acr
           requires:
             - build_test
-      - build_image:
-          name: build_image_labs
-          context:
-            - ayuda-acr
-          requires:
-            - build_test
       - push_image:
           name: push_image_labs
           context:
             - ayuda-acr-labs
           requires:
-            - build_image_labs
+            - build_image
       - terraform_deployment:
           name: terraform_deployment_labs
           requires:
