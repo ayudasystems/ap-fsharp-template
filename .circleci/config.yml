@@ -226,25 +226,6 @@ workflows:
             - ayuda-acr
           requires:
             - build_test
-      - push_image:
-          context:
-            - ayuda-acr-labs
-          requires:
-            - build_image
-      - terraform_deployment:
-          requires:
-            - push_image
-          context:
-            - ayuda-acr-labs
-            - az-resources
-            - az-resources-labs
-            - ap-fsharp-template-resource-credentials-labs
-      - service_health_check:
-          name: service_health_check_labs
-          requires:
-            - terraform_deployment
-          context:
-            - az-resources-labs
 
   deploy_infrastructure:
     when:
