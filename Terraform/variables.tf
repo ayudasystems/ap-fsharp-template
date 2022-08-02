@@ -12,6 +12,11 @@ variable "environment" {
   description = "Environment (Ayuda Dev / Ayuda Preview / Ayuda Cloud)"
 }
 
+variable "resource_group_name" {
+  default     = "ayudalabs-na-01"
+  description = "Name of the app plan resource group."
+}
+
 variable "service_name" {
   default     = "FSharpTemplate"
   type        = string
@@ -24,9 +29,10 @@ variable "environment_suffix" {
   description = "Environment Suffix. E.g.: Ayuda Dev -> -NA-CI, Ayuda Preview -> -EU-UAT"
 }
 
-variable "resource_group_name" {
-  default     = "ayudalabs-na-01"
-  description = "Name of the resource group."
+variable "environment_suffix_lowercase" {
+  default     = "-na-ci"
+  type        = string
+  description = "Environment Suffix. E.g.: Ayuda Dev -> -na-ci, Ayuda Preview -> -na-ci"
 }
 
 variable "resource_group_location" {
