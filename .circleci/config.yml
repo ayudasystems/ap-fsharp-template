@@ -242,7 +242,7 @@ workflows:
       - service_health_check:
           name: service_health_check_labs
           requires:
-            - terraform_deployment_labs
+            - terraform_deployment
           context:
             - az-resources-labs
 
