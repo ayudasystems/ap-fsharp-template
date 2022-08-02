@@ -211,7 +211,7 @@ jobs:
       - run:
           name: service deployment health check
           command: |
-            ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
+            ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep "environment_suffix " | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
             OK_200=`curl -w ' %{http_code}' "https://<< pipeline.parameters.docker_name >>$ENVIRONMENT_SUFFIX.azurewebsites.net/api/health" | awk '{print $2}'`
             if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
 
