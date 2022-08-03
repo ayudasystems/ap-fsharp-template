@@ -158,11 +158,13 @@ jobs:
             SERVICE_NAME=<< pipeline.parameters.service_name >>
             cd /tmp/project/Terraform
             TERRAFORM_BACKEND_CONFIG_FILE=<< pipeline.parameters.terraform_backend_config_file >>
-            RESOURCE_GROUP_NAME=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep resource_group_name | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
+            APP_PLAN_RESOURCE_GROUP_NAME=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep resource_group_name | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
             SERVICE_PLAN_NAME=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep service_plan_name | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
             ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
+            ENV_SUFFIX_LOWERCASE=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep env_suffix_lowercase | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
             DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
             DOCKER_CONTAINER_TAG=build-<< pipeline.number >>
+            RESOURCE_GROUP_NAME=$SERVICE_NAME$ENV_SUFFIX_LOWERCASE
             cat > /tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE \<< END
             resource_group_name  = "$AZURE_BACKEND_RESOURCE_GROUP_NAME"
             storage_account_name = "$AZURE_BACKEND_STORAGE_ACCOUNT_NAME"
@@ -188,11 +190,11 @@ jobs:
             user_assigned_identity_name = "$AP_USER_ASSIGNED_ENTITY"
             END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME || true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.app_plan_rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$APP_PLAN_RESOURCE_GROUP_NAME || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_service_plan.sp /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$APP_PLAN_RESOURCE_GROUP_NAME/providers/Microsoft.Web/serverfarms/$SERVICE_PLAN_NAME || true
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_container_registry.cr /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME/providers/Microsoft.ContainerRegistry/registries/$AP_CONTAINER_REGISTRY_USERNAME || true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_user_assigned_identity.uai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$AP_USER_ASSIGNED_ENTITY || true 
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_user_assigned_identity.uai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$APP_PLAN_RESOURCE_GROUP_NAME/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$AP_USER_ASSIGNED_ENTITY || true
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_linux_web_app.as /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/sites/$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_linux_function_app.fa /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/sites/$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_application_insights.ai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Insights/components/$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_log_analytics_workspace.law /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.OperationalInsights/workspaces/$SERVICE_NAME$ENVIRONMENT_SUFFIX-law || true
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
