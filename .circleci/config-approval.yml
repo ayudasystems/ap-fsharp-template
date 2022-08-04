@@ -168,7 +168,7 @@ jobs:
             cat > /tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE \<< END
             resource_group_name  = "$AZURE_BACKEND_RESOURCE_GROUP_NAME"
             storage_account_name = "$AZURE_BACKEND_STORAGE_ACCOUNT_NAME"
-            container_name       = "$AZURE_BACKEND_RESOURCE_GROUP_NAME"
+            container_name       = "$AZURE_BACKEND_STORAGE_ACCOUNT_NAME"
             key                  = "<< pipeline.parameters.docker_name >>.$AZURE_BACKEND_TERRAFORM_KEY"
             END
             export ARM_SUBSCRIPTION_ID=$AZ_SUBSCRIPTION_ID
