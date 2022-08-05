@@ -12,6 +12,7 @@ orbs:
 # - AP_CONTAINER_REGISTRY_USERNAME
 # - AP_USER_ASSIGNED_ENTITY
 # - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME
+# - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_LOCATION
 
 # Note: These are provided by the ayuda-acr-preview context
 # - AP_CONTAINER_REGISTRY_HOST
@@ -19,6 +20,7 @@ orbs:
 # - AP_CONTAINER_REGISTRY_USERNAME
 # - AP_USER_ASSIGNED_ENTITY
 # - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME
+# - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_LOCATION
 
 # Note: These are provided by the ayuda-acr context
 # - AP_CONTAINER_REGISTRY_HOST
@@ -26,6 +28,7 @@ orbs:
 # - AP_CONTAINER_REGISTRY_USERNAME
 # - AP_USER_ASSIGNED_ENTITY
 # - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME
+# - AP_CONTAINER_REGISTRY_RESOURCE_GROUP_LOCATION
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-labs context
 # - AZ_SERVICE_PRINCIPAL_APP_ID
@@ -184,6 +187,7 @@ jobs:
             service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
             docker_registry_server_name = "$AP_CONTAINER_REGISTRY_USERNAME"
             docker_registry_resource_group_name = "$AP_CONTAINER_REGISTRY_RESOURCE_GROUP_NAME"
+            docker_registry_resource_group_location = "$AP_CONTAINER_REGISTRY_RESOURCE_GROUP_LOCATION"
             docker_registry_server_url = "$AP_CONTAINER_REGISTRY_HOST"
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"

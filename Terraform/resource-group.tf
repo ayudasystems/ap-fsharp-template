@@ -9,6 +9,10 @@ resource "azurerm_resource_group" "rg" {
 resource "azurerm_resource_group" "app_plan_rg" {
   name     = var.resource_group_name
   location = var.resource_group_location
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Create a virtual network within the resource group

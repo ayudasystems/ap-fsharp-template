@@ -5,4 +5,8 @@ resource "azurerm_user_assigned_identity" "uai" {
   resource_group_name = azurerm_resource_group.app_plan_rg.name
   location            = azurerm_resource_group.app_plan_rg.location
   name                = var.user_assigned_identity_name
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

@@ -71,6 +71,11 @@ variable "docker_registry_resource_group_name" {
   description = "Docker Registry Resource Group Name"
 }
 
+variable "docker_registry_resource_group_location" {
+  type        = string
+  description = "Docker Registry Resource Group Location"
+}
+
 variable "docker_registry_server_url" {
   type        = string
   description = "Docker Registry Server Hostname"
