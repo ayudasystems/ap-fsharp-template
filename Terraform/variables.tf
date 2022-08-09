@@ -1,10 +1,5 @@
 # terraform/variables.tf
 
-variable "resource_group_name" {
-  default     = "ayudalabs-na-01"
-  description = "Name of the app plan resource group."
-}
-
 variable "service_name" {
   default     = "FSharpTemplate"
   type        = string
@@ -17,28 +12,10 @@ variable "environment_suffix" {
   description = "Environment Suffix. E.g.: Ayuda Dev -> -NA-CI, Ayuda Preview -> -EU-UAT"
 }
 
-variable "env_suffix_lowercase" {
-  default     = "-na-ci"
-  type        = string
-  description = "Environment Suffix. E.g.: Ayuda Dev -> -na-ci, Ayuda Preview -> -na-ci"
-}
-
 variable "resource_group_location" {
   default     = "North Central US"
   type        = string
   description = "Location of the resource group."
-}
-
-variable "service_plan_name" {
-  default     = "ayudalabs-na-ci-serviceplan"
-  type        = string
-  description = "Name of the Service Plan."
-}
-
-variable "service_plan_sku_name" {
-  default     = "S1"
-  type        = string
-  description = "Name of the Service Plan Pricing Tier."
 }
 
 variable "azure_subscription_id" {
@@ -61,21 +38,6 @@ variable "service_principal_password" {
   description = "Azure Service Principal Password"
 }
 
-variable "docker_registry_server_name" {
-  type        = string
-  description = "Docker Registry Server Username"
-}
-
-variable "docker_registry_resource_group_name" {
-  type        = string
-  description = "Docker Registry Resource Group Name"
-}
-
-variable "docker_registry_resource_group_location" {
-  type        = string
-  description = "Docker Registry Resource Group Location"
-}
-
 variable "docker_registry_server_url" {
   type        = string
   description = "Docker Registry Server Hostname"
@@ -91,7 +53,17 @@ variable "docker_container_tag" {
   description = "Docker Container Tag version generated in previous build"
 }
 
-variable "user_assigned_identity_name" {
+variable "service_plan_id" {
   type        = string
-  description = "Managed Identity to provide access to Terraform for pulling docker images from Container Registry"
+  description = "Linux Service Plan Id"
+}
+
+variable "user_assigned_identity_id" {
+  type        = string
+  description = "Managed Identity ID to provide access to Terraform for pulling docker images from Container Registry"
+}
+
+variable "user_assigned_identity_client_id" {
+  type        = string
+  description = "Managed Identity Client ID to provide access to Terraform for pulling docker images from Container Registry"
 }
