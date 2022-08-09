@@ -1,3 +1,3 @@
 # terraform/terraform.tfvars Default/Local
 
-environment_suffix      = "-NA-CI"
+environment_suffix = "-NA-CI"
