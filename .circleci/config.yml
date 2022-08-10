@@ -151,7 +151,7 @@ jobs:
           name: Push image as latest
           command: docker push "$AP_CONTAINER_REGISTRY_HOST/<< pipeline.parameters.docker_name >>:latest"
 
-  terraform_deployment:
+  terraform_deployment_plan:
     working_directory: /tmp/project
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -159,7 +159,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: terraform plan & apply infrastructure
+          name: terraform plan
           command: |
             SERVICE_NAME=<< pipeline.parameters.service_name >>
             cd /tmp/project/Terraform
@@ -181,7 +181,6 @@ jobs:
             terraform init -backend-config=/tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
             terraform validate
             cat >> /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
-            APP_PLAN_RESOURCE_GROUP_NAME=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep resource_group_name | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
             resource_group_name = "$APP_PLAN_RESOURCE_GROUP_NAME"
             service_plan_name = "$SERVICE_PLAN_NAME"
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
@@ -199,6 +198,28 @@ jobs:
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_application_insights.ai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Insights/components/$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_log_analytics_workspace.law /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.OperationalInsights/workspaces/$SERVICE_NAME$ENVIRONMENT_SUFFIX-law || true
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - /tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
+            - /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE
+
+  terraform_deployment_apply:
+    working_directory: /tmp/project
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: ./Terraform
+      - checkout
+      - run:
+          name: terraform apply infrastructure
+          command: |
+            cd /tmp/project/Terraform
+            TERRAFORM_BACKEND_CONFIG_FILE=<< pipeline.parameters.terraform_backend_config_file >>
+            terraform init -backend-config=/tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
+            terraform validate
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
 
   service_health_check:
@@ -248,8 +269,8 @@ workflows:
             - ayuda-acr-labs
           requires:
             - build_image_labs
-      - terraform_deployment:
-          name: terraform_deployment_labs
+      - terraform_deployment_plan:
+          name: terraform_deployment_plan_labs
           requires:
             - push_image_labs
           context:
@@ -257,10 +278,16 @@ workflows:
             - az-resources
             - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
+      - terraform_deployment_apply:
+          name: terraform_deployment_apply_labs
+          requires:
+            - terraform_deployment_plan_labs
+          context:
+            - az-resources-labs
       - service_health_check:
           name: service_health_check_labs
           requires:
-            - terraform_deployment_labs
+            - terraform_deployment_apply_labs
           context:
             - az-resources-labs
       - push_image:
@@ -269,8 +296,8 @@ workflows:
             - service_health_check_labs
           context:
             - ayuda-acr-preview
-      - terraform_deployment:
-          name: terraform_deployment_preview
+      - terraform_deployment_plan:
+          name: terraform_deployment_plan_preview
           requires:
             - push_image_preview
           context:
@@ -278,10 +305,16 @@ workflows:
             - az-resources
             - az-resources-preview
             - ap-fsharp-template-resource-credentials-preview
+      - terraform_deployment_apply:
+          name: terraform_deployment_apply_preview
+          requires:
+            - terraform_deployment_plan_preview
+          context:
+            - az-resources-preview
       - service_health_check:
           name: service_health_check_preview
           requires:
-            - terraform_deployment_preview
+            - terraform_deployment_apply_preview
           context:
             - az-resources-preview
       - push_image:
@@ -290,8 +323,8 @@ workflows:
             - service_health_check_preview
           context:
             - ayuda-acr
-      - terraform_deployment:
-          name: terraform_deployment_cloud
+      - terraform_deployment_plan:
+          name: terraform_deployment_plan_cloud
           requires:
             - push_image_cloud
           context:
@@ -299,9 +332,14 @@ workflows:
             - az-resources
             - az-resources-cloud
             - ap-fsharp-template-resource-credentials-cloud
-      - service_health_check:
-          name: service_health_check_cloud
+      - hold:
+          name: require_approval_plan_cloud
+          type: approval
           requires:
-            - terraform_deployment_cloud
+            - terraform_deployment_plan_cloud
+      - terraform_deployment_apply:
+          name: terraform_deployment_apply_cloud
+          requires:
+            - require_approval_plan_cloud
           context:
             - az-resources-cloud
