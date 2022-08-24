@@ -70,6 +70,9 @@ orbs:
 # - AZ_TENANT
 
 parameters:
+  project_name:
+    default: FSharpTemplate
+    type: string
   service_name:
     default: fsharptemplate
     type: string
@@ -91,11 +94,11 @@ jobs:
       - run:
           name: Build
           command: dotnet build
-          working_directory: << pipeline.parameters.service_name >>
+          working_directory: << pipeline.parameters.project_name >>
       - run:
           name: Running Tests
           command: dotnet test
-          working_directory: << pipeline.parameters.service_name >>
+          working_directory: << pipeline.parameters.project_name >>
 
   #  other-unit-tests:
   #    ToDo
