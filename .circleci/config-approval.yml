@@ -6,13 +6,6 @@ version: 2.1
 orbs:
   terraform: circleci/terraform@3.1.0
 
-# Note: These are provided by the ayuda-acr-labs context
-# - AP_CONTAINER_REGISTRY_HOST
-# - AP_CONTAINER_REGISTRY_PASSWORD
-# - AP_CONTAINER_REGISTRY_USERNAME
-# - AP_USER_ASSIGNED_ENTITY_ID
-# - AP_USER_ASSIGNED_ENTITY_CLIENT_ID
-
 # Note: These are provided by the ayuda-acr-preview context
 # - AP_CONTAINER_REGISTRY_HOST
 # - AP_CONTAINER_REGISTRY_PASSWORD
@@ -285,17 +278,17 @@ workflows:
           requires:
             - build_test
       - push_image:
-          name: push_image_labs
+          name: push_image_labs_preview
           context:
-            - ayuda-acr-labs
+            - ayuda-acr-preview
           requires:
             - build_image_labs
       - terraform_deployment_plan:
           name: terraform_deployment_plan_labs
           requires:
-            - push_image_labs
+            - push_image_labs_preview
           context:
-            - ayuda-acr-labs
+            - ayuda-acr-preview
             - az-resources
             - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
@@ -304,7 +297,7 @@ workflows:
           requires:
             - terraform_deployment_plan_labs
           context:
-            - ayuda-acr-labs
+            - ayuda-acr-preview
             - az-resources
             - az-resources-labs
             - ap-fsharp-template-resource-credentials-labs
@@ -328,7 +321,7 @@ workflows:
       - terraform_deployment_plan:
           name: terraform_deployment_plan_preview
           requires:
-            - push_image_preview
+            - service_health_check_labs
           context:
             - ayuda-acr-preview
             - az-resources
