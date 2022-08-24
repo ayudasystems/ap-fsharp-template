@@ -2,10 +2,10 @@
 
 # Create the web app, pass in the App Service Plan ID, and deploy code from a public GitHub repo
 resource "azurerm_linux_web_app" "as" {
-  name                = "${var.service_name}${var.environment_suffix}"
+  name                = "as-${var.service_name}${var.environment_suffix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_service_plan.sp.id
+  service_plan_id     = "/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Web/serverfarms/${var.service_plan_name}"
 
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE        = "false"
@@ -25,7 +25,7 @@ resource "azurerm_linux_web_app" "as" {
       docker_image_tag = var.docker_container_tag
     }
 
-    container_registry_managed_identity_client_id = azurerm_user_assigned_identity.uai.client_id
+    container_registry_managed_identity_client_id = var.user_assigned_identity_client_id
     container_registry_use_managed_identity       = true
     health_check_path                             = "/api/health"
 
@@ -33,7 +33,7 @@ resource "azurerm_linux_web_app" "as" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.uai.id]
+    identity_ids = [var.user_assigned_identity_id]
   }
 
   logs {

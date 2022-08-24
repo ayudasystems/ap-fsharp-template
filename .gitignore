@@ -6,3 +6,4 @@ riderModule.iml
 /Terraform/*.hcl
 /Terraform/*.info
 /Terraform/*.tfstate
+/Terraform/local.terraform.tfvars
