@@ -70,3 +70,14 @@ https://circleci.com/developer/orbs/orb/circleci/terraform
   ![docs/Automatic Based Pipeline.PNG](docs/Automatic Based Pipeline.PNG)
   * Approval Based Pipeline: Application will be deployed into Development environment. Promote to UAT and Production will require an approval.
   ![docs/Approval Based Pipeline.PNG](docs/Approval Based Pipeline.PNG)
+
+
+## Azure Cloud naming convention
+[Resource Type]-[Workload/Application]-[Environment]-[Region]-[Instance]
+* Resource Type: E.g. as (App Service) af (App Function) sa (Storage Account)
+* Workload/Application: Resource name. E.g. fsharptemplate
+* Environment: E.g. labs, preview, cloud
+* Region: Region abbreviation. E.g. na, eu, ap
+* Instance: Number of instance. E.g. 01,02
+
+(https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)

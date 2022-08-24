@@ -10,21 +10,21 @@ orbs:
 # - AP_CONTAINER_REGISTRY_HOST
 # - AP_CONTAINER_REGISTRY_PASSWORD
 # - AP_CONTAINER_REGISTRY_USERNAME
-# - AP_USER_ASSIGNED_ENTITY
+# - AP_USER_ASSIGNED_ENTITY_ID
 # - AP_USER_ASSIGNED_ENTITY_CLIENT_ID
 
 # Note: These are provided by the ayuda-acr-preview context
 # - AP_CONTAINER_REGISTRY_HOST
 # - AP_CONTAINER_REGISTRY_PASSWORD
 # - AP_CONTAINER_REGISTRY_USERNAME
-# - AP_USER_ASSIGNED_ENTITY
+# - AP_USER_ASSIGNED_ENTITY_ID
 # - AP_USER_ASSIGNED_ENTITY_CLIENT_ID
 
 # Note: These are provided by the ayuda-acr context
 # - AP_CONTAINER_REGISTRY_HOST
 # - AP_CONTAINER_REGISTRY_PASSWORD
 # - AP_CONTAINER_REGISTRY_USERNAME
-# - AP_USER_ASSIGNED_ENTITY
+# - AP_USER_ASSIGNED_ENTITY_ID
 # - AP_USER_ASSIGNED_ENTITY_CLIENT_ID
 
 # Note: These are provided by the ap-fsharp-template-resource-credentials-labs context
@@ -71,7 +71,7 @@ orbs:
 
 parameters:
   service_name:
-    default: FSharpTemplate
+    default: fsharptemplate
     type: string
   docker_name:
     default: fsharptemplate
@@ -161,13 +161,8 @@ jobs:
       - run:
           name: terraform plan
           command: |
-            SERVICE_NAME=<< pipeline.parameters.service_name >>
             cd /tmp/project/Terraform
             TERRAFORM_BACKEND_CONFIG_FILE=<< pipeline.parameters.terraform_backend_config_file >>
-            ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
-            DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
-            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>
-            RESOURCE_GROUP_NAME=$SERVICE_NAME$ENVIRONMENT_SUFFIX
             cat > /tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE \<< END
             resource_group_name  = "$AZURE_BACKEND_RESOURCE_GROUP_NAME"
             storage_account_name = "$AZURE_BACKEND_STORAGE_ACCOUNT_NAME"
@@ -178,11 +173,15 @@ jobs:
             export ARM_CLIENT_ID=$AZ_SERVICE_PRINCIPAL_APP_ID
             export ARM_CLIENT_SECRET=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD
             export ARM_TENANT_ID=$AZ_TENANT
+            SERVICE_NAME=<< pipeline.parameters.service_name >>
+            ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
+            RESOURCE_GROUP_NAME=rg-$SERVICE_NAME$ENVIRONMENT_SUFFIX
+            DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
+            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>
             terraform init -backend-config=/tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
             terraform validate
             cat >> /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
-            resource_group_name = "$APP_PLAN_RESOURCE_GROUP_NAME"
-            service_plan_name = "$SERVICE_PLAN_NAME"
+            service_name = "$SERVICE_NAME"
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
             azure_subscription_tenant_id = "$AZ_TENANT"
             service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
@@ -190,19 +189,20 @@ jobs:
             docker_registry_server_url = "$AP_CONTAINER_REGISTRY_HOST"
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
-            user_assigned_identity_name = "$AP_USER_ASSIGNED_ENTITY"
+            resource_group_name = "$APP_PLAN_RESOURCE_GROUP_NAME"
+            service_plan_name = "$SERVICE_PLAN_NAME"
+            user_assigned_identity_id = "$AP_USER_ASSIGNED_ENTITY_ID"
             user_assigned_identity_client_id = "$AP_USER_ASSIGNED_ENTITY_CLIENT_ID"
             END
             terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_resource_group.rg /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME || true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_linux_web_app.as /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/sites/$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_application_insights.ai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Insights/components/$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
-            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_log_analytics_workspace.law /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.OperationalInsights/workspaces/$SERVICE_NAME$ENVIRONMENT_SUFFIX-law || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_linux_web_app.as /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Web/sites/as-$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_application_insights.ai /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.Insights/components/ai-$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
+            terraform import -var-file="$TERRAFORM_ENV_CONFIG_FILE" azurerm_log_analytics_workspace.law /subscriptions/$AZ_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.OperationalInsights/workspaces/law-$SERVICE_NAME$ENVIRONMENT_SUFFIX || true
             terraform plan -var-file="$TERRAFORM_ENV_CONFIG_FILE"
       - persist_to_workspace:
           root: .
           paths:
-            - /tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
-            - /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE
+            - ./Terraform/<< pipeline.parameters.terraform_backend_config_file >>
 
   terraform_deployment_apply:
     working_directory: /tmp/project
@@ -210,16 +210,38 @@ jobs:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     resource_class: small
     steps:
-      - attach_workspace:
-          at: ./Terraform
       - checkout
+      - attach_workspace:
+          at: ./
       - run:
           name: terraform apply infrastructure
           command: |
             cd /tmp/project/Terraform
             TERRAFORM_BACKEND_CONFIG_FILE=<< pipeline.parameters.terraform_backend_config_file >>
+            export ARM_SUBSCRIPTION_ID=$AZ_SUBSCRIPTION_ID
+            export ARM_CLIENT_ID=$AZ_SERVICE_PRINCIPAL_APP_ID
+            export ARM_CLIENT_SECRET=$AZ_SERVICE_PRINCIPAL_APP_PASSWORD
+            export ARM_TENANT_ID=$AZ_TENANT
             terraform init -backend-config=/tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
             terraform validate
+            SERVICE_NAME=<< pipeline.parameters.service_name >>
+            RESOURCE_GROUP_NAME=rg-$SERVICE_NAME$ENVIRONMENT_SUFFIX            
+            DOCKER_CONTAINER_NAME=<< pipeline.parameters.docker_name >>
+            DOCKER_CONTAINER_TAG=build-<< pipeline.number >>
+            cat >> /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE \<< END
+            service_name = "$SERVICE_NAME"
+            azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
+            azure_subscription_tenant_id = "$AZ_TENANT"
+            service_principal_appid = "$AZ_SERVICE_PRINCIPAL_APP_ID"
+            service_principal_password = "$AZ_SERVICE_PRINCIPAL_APP_PASSWORD"
+            docker_registry_server_url = "$AP_CONTAINER_REGISTRY_HOST"  
+            docker_container_name = "$DOCKER_CONTAINER_NAME"
+            docker_container_tag = "$DOCKER_CONTAINER_TAG"
+            resource_group_name = "$APP_PLAN_RESOURCE_GROUP_NAME"
+            service_plan_name = "$SERVICE_PLAN_NAME"
+            user_assigned_identity_id = "$AP_USER_ASSIGNED_ENTITY_ID"
+            user_assigned_identity_client_id = "$AP_USER_ASSIGNED_ENTITY_CLIENT_ID"
+            END
             terraform apply -auto-approve -var-file="$TERRAFORM_ENV_CONFIG_FILE"
 
   service_health_check:
@@ -232,31 +254,27 @@ jobs:
       - run:
           name: service deployment health check
           command: |
-            ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`            
-            OK_200=`curl --retry 5 --retry-delay 60 -w ' %{http_code}' "https://<< pipeline.parameters.docker_name >>$ENVIRONMENT_SUFFIX.azurewebsites.net/api/health" | awk '{print $2}'`
+            ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
+            SERVICE_NAME=as-<< pipeline.parameters.service_name >>$ENVIRONMENT_SUFFIX
+            OK_200=`curl --retry 5 --retry-delay 60 -w ' %{http_code}' "https://$SERVICE_NAME.azurewebsites.net/api/health" | tail -1 | sed 's/.*\(...\)/\1/'`
             if [[ $OK_200 == 200  ]]; then exit 0; else exit 1; fi
 
 workflows:
   pull_requests:
     unless:
-      equal: [ "master", << pipeline.git.branch >> ]
+      equal: [ "main", << pipeline.git.branch >> ]
     jobs:
       - build_test
-      - build_image:
-          context:
-            - ayuda-acr
-          requires:
-            - build_test
 
   deploy_infrastructure:
     when:
-      equal: [ "master", << pipeline.git.branch >> ]
+      equal: [ "main", << pipeline.git.branch >> ]
     jobs:
       - build_test:
           filters:
             branches:
               only:
-                - master
+                - main
       - build_image:
           name: build_image_labs
           context:
@@ -283,7 +301,10 @@ workflows:
           requires:
             - terraform_deployment_plan_labs
           context:
+            - ayuda-acr-labs
+            - az-resources
             - az-resources-labs
+            - ap-fsharp-template-resource-credentials-labs
       - service_health_check:
           name: service_health_check_labs
           requires:
@@ -310,7 +331,10 @@ workflows:
           requires:
             - terraform_deployment_plan_preview
           context:
+            - ayuda-acr-preview
+            - az-resources
             - az-resources-preview
+            - ap-fsharp-template-resource-credentials-preview
       - service_health_check:
           name: service_health_check_preview
           requires:
@@ -342,4 +366,7 @@ workflows:
           requires:
             - require_approval_plan_cloud
           context:
+            - ayuda-acr
+            - az-resources
             - az-resources-cloud
+            - ap-fsharp-template-resource-credentials-cloud

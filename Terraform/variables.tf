@@ -1,14 +1,13 @@
 # terraform/variables.tf
 
 variable "service_name" {
-  default     = "FSharpTemplate"
   type        = string
   description = "New Service Name"
 }
 
 variable "environment_suffix" {
   type        = string
-  description = "Environment Suffix. E.g.: Ayuda Dev -> -NA-CI, Ayuda Preview -> -EU-UAT"
+  description = "Environment Suffix. E.g.: Ayuda Dev -> -labs-na-01, Ayuda Preview -> -preview-eu-01"
 }
 
 variable "resource_group_name" {
@@ -61,7 +60,7 @@ variable "docker_container_tag" {
   description = "Docker Container Tag version generated in previous build"
 }
 
-variable "user_assigned_identity_name" {
+variable "user_assigned_identity_id" {
   type        = string
   description = "Managed Identity to provide access to Terraform for pulling docker images from Container Registry"
 }

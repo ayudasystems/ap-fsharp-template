@@ -2,7 +2,7 @@
 
 # Create the web app, pass in the App Service Plan ID, and deploy code from a public GitHub repo
 resource "azurerm_linux_web_app" "as" {
-  name                = "${var.service_name}${var.environment_suffix}"
+  name                = "as-${var.service_name}${var.environment_suffix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = "/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Web/serverfarms/${var.service_plan_name}"
@@ -33,7 +33,7 @@ resource "azurerm_linux_web_app" "as" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = ["/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${var.user_assigned_identity_name}"]
+    identity_ids = [var.user_assigned_identity_id]
   }
 
   logs {

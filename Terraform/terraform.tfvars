@@ -1,3 +1,4 @@
 # terraform/terraform.tfvars Default/Local
 
-environment_suffix = "-NA-CI"
+environment_suffix      = "-labs-na-01"
+resource_group_location = "northcentralus"
