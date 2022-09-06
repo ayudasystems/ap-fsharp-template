@@ -15,11 +15,6 @@ variable "resource_group_name" {
   description = "Name of the app plan resource group."
 }
 
-variable "resource_group_location" {
-  type        = string
-  description = "Location of the resource group."
-}
-
 variable "service_plan_name" {
   type        = string
   description = "Linux Service Plan Name"

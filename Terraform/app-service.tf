@@ -3,8 +3,8 @@
 # Create the web app, pass in the App Service Plan ID, and deploy code from a public GitHub repo
 resource "azurerm_linux_web_app" "as" {
   name                = "as-${var.service_name}${var.environment_suffix}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
   service_plan_id     = "/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Web/serverfarms/${var.service_plan_name}"
 
   app_settings = {
@@ -42,4 +42,13 @@ resource "azurerm_linux_web_app" "as" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
+      app_settings["APPLICATIONINSIGHTS_CONNECTION_STRING"],
+      app_settings["APPINSIGHTS_INSTRUMENTATIONKEY"],
+      site_config["application_insights_connection_string"],
+      site_config["application_insights_key"]
+    ]
+  }
 }
