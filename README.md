@@ -42,18 +42,19 @@ Folder: /Terraform
 * `<template>.tf`: Azure Resources Templates in the cloud provider. Please, check below available resources.
 
 Azure Resources
-* resource-group
-* app-service-plan
 * app-service
 * application-insights
 * log-analytic-workspace
-* container-registry
-* assigned-identity 
-  * (User Assigned Identity requires an Azure Role Assignment 'AcrPull' for Container Registry with "Microsoft.ContainerRegistry/registries/pull/read" permissions)
- 
+  
+Azure Data Sources
+* resource-group
+
 ## Terraform Commands
 * `terraform init`: command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times.
   (https://www.terraform.io/cli/commands/init)
+    * This project is based on using Backend: https://www.terraform.io/language/settings/backends/configuration
+    * Backend file name: backend.hcl
+    * Storage Account for Backend: tfstateeu, tfstateeuuat, tfstatenaci > missingbillschdrport depending on the environment
 * `terraform plan`: command creates an execution plan, which lets you preview the changes that Terraform plans to make to your infrastructure
   (https://www.terraform.io/cli/commands/plan)
 * `terraform apply`: command executes the actions proposed in a Terraform plan
