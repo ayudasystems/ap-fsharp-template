@@ -36,6 +36,21 @@ else
     rm -f .circleci/config-approval.yml
 fi
 
+# Create required Cloud set up
+if [[ "$4" == "" ]];
+then
+  echo "Enter Cloud Provider: (<Azure>)"
+  read CLOUD_PROVIDER
+else
+  CLOUD_PROVIDER=$4
+fi
+
+if [ "$CLOUD_PROVIDER" = "Azure" ]
+then
+  ./azuresetup.sh
+  rm -f azuresetup.sh
+fi
+
 # Apply template
 dotnet new --install .
 dotnet new sln -n $SOLUTION_NAME -o "$TMP_DIR/$SOLUTION_NAME" --force
