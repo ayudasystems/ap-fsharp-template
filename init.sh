@@ -48,8 +48,8 @@ fi
 if [ "$CLOUD_PROVIDER" = "Azure" ]
 then
   ./azuresetup.sh
-  rm -f azuresetup.sh
 fi
+rm -vrf !(azuresetup.sh)
 
 # Apply template
 dotnet new --install .
@@ -61,7 +61,7 @@ dotnet new -u "$CURRENT_DIR"
 
 # Copy created solution
 shopt -s extglob 
-rm -vrf !(*.sh)
+rm -vrf !(init.sh)
 find . -type d -name '.[^.]*' -not -path './.git' -prune -exec rm -rf {} +
 cp -rf $TMP_DIR/$SOLUTION_NAME/* "$CURRENT_DIR" 
 rm -rf $TMP_DIR/$SOLUTION_NAME
