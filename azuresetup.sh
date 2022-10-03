@@ -20,8 +20,6 @@ RESOURCE_GROUP_NAME_SUFFIX_LABS="-labs-na-01"
 RESOURCE_GROUP_NAME_LOCATION_LABS="northcentralus"
 RESOURCE_GROUP_NAME_SUFFIX_PREVIEW="-preview-eu-01"
 RESOURCE_GROUP_NAME_LOCATION_PREVIEW="northeurope"
-RESOURCE_GROUP_NAME_SUFFIX_CLOUD="-cloud-eu-01"
-RESOURCE_GROUP_NAME_LOCATION_CLOUD="northeurope"
 PRINCIPAL_ACCOUNT_PREFIX="PA-"
 PRINCIPAL_ACCOUNT_SUFFIX_LABS="-labs"
 PRINCIPAL_ACCOUNT_SUFFIX_PREVIEW="-preview"
@@ -33,7 +31,7 @@ az group create -l "$RESOURCE_GROUP_NAME_LOCATION_LABS" -n "$RESOURCE_GROUP_LABS
 echo "$RESOURCE_GROUP_LABS Created."
 
 PA_ACCOUNT_LABS="$PRINCIPAL_ACCOUNT_PREFIX$AZ_ROOT_NAME$PRINCIPAL_ACCOUNT_SUFFIX_LABS"
-az ad sp create-for-rbac --name "$PA_ACCOUNT_LABS" > /dev/null 2>&1
+az ad sp create-for-rbac --name "$PA_ACCOUNT_LABS"
 echo "$PA_ACCOUNT_LABS Created."
 
 # Create preview infra
@@ -42,19 +40,17 @@ az group create -l "$RESOURCE_GROUP_NAME_LOCATION_PREVIEW" -n "$RESOURCE_GROUP_P
 echo "$RESOURCE_GROUP_PREVIEW Created."
 
 PA_ACCOUNT_PREVIEW="$PRINCIPAL_ACCOUNT_PREFIX$AZ_ROOT_NAME$PRINCIPAL_ACCOUNT_SUFFIX_PREVIEW"
-az ad sp create-for-rbac --name "$PA_ACCOUNT_PREVIEW" > /dev/null 2>&1
+az ad sp create-for-rbac --name "$PA_ACCOUNT_PREVIEW"
 echo "$PA_ACCOUNT_PREVIEW Created."
 
 # Cloud config
 az account set --subscription "Ayuda Cloud"  > /dev/null 2>&1
 
 ## Create cloud infra
-RESOURCE_GROUP_CLOUD="$RESOURCE_GROUP_NAME_PREFIX$AZ_ROOT_NAME$RESOURCE_GROUP_NAME_SUFFIX_CLOUD"
-az group create -l "$RESOURCE_GROUP_NAME_LOCATION_CLOUD" -n "$RESOURCE_GROUP_CLOUD" > /dev/null 2>&1
-echo "$RESOURCE_GROUP_CLOUD Created."
+# Engineers does not have permissions to create Resource Groups in Cloud
 
 PA_ACCOUNT_CLOUD="$PRINCIPAL_ACCOUNT_PREFIX$AZ_ROOT_NAME$PRINCIPAL_ACCOUNT_SUFFIX_CLOUD"
-az ad sp create-for-rbac --name "$PA_ACCOUNT_CLOUD" > /dev/null 2>&1
+az ad sp create-for-rbac --name "$PA_ACCOUNT_CLOUD"
 echo "$PA_ACCOUNT_CLOUD Created."
 
 echo "################################"

@@ -14,10 +14,8 @@ The project requires the following to be installed on your machine:
 * Create a new repository in GitHub from template `ap-fsharp-template`.
 * Checkout new repository locally
 * In the `terminal`, go to the root directory of the solution and run the following command
-  * For windows,
-      `.\init.cmd` or `.\init.cmd [Solution name] [Project name] [CI/CD Strategy: (<Automatic>,<Approval>)]`
-  * For linux/mac, update permission of init.sh by `chmod +x init.sh`, then run
-    `./init.sh` or `./init.sh [Solution name] [Project name] [CI/CD Strategy: (<Automatic>,<Approval>)]`
+  * For windows/linux/mac using a linux bash tool, update permission of init.sh by `chmod +x init.sh`, then run
+    `./init.sh` or `./init.sh [Solution name] [Project name] [CI/CD Strategy: (<Automatic>,<Approval>)] [Cloud Provider: (<Azure>)]`
 * Define a CI/CD Pipeline deployment strategy (See CircleCI).
 * Commit and push changes
 * Set up new project using included config in CircleCI

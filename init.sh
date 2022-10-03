@@ -61,8 +61,7 @@ dotnet new -u "$CURRENT_DIR"
 
 # Copy created solution
 shopt -s extglob 
-rm -vrf !(init.sh)
+rm -vrf !(*.sh)
 find . -type d -name '.[^.]*' -not -path './.git' -prune -exec rm -rf {} +
 cp -rf $TMP_DIR/$SOLUTION_NAME/* "$CURRENT_DIR" 
 rm -rf $TMP_DIR/$SOLUTION_NAME
-rm -f init.sh
