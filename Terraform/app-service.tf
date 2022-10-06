@@ -41,14 +41,4 @@ resource "azurerm_linux_web_app" "as" {
       file_system_level = "Information"
     }
   }
-
-  lifecycle {
-    ignore_changes = [
-      app_settings["WEBSITE_HEALTHCHECK_MAXPINGFAILURES"],
-      app_settings["APPLICATIONINSIGHTS_CONNECTION_STRING"],
-      app_settings["APPINSIGHTS_INSTRUMENTATIONKEY"],
-      site_config["application_insights_connection_string"],
-      site_config["application_insights_key"]
-    ]
-  }
 }
