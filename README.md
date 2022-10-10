@@ -66,7 +66,9 @@ Azure Data Sources
   (https://www.terraform.io/cli/commands/destroy)
 
 ## CircleCI
-* .circleci/config.yml
+* .circleci/config.yml (Mocked for Template)
+* .circleci/config-automatic.yml
+* .circleci/config-approval.yml
 * Terraform Orb Documentation
 https://circleci.com/developer/orbs/orb/circleci/terraform
 * `Deployment strategy`:
