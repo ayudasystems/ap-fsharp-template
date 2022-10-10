@@ -14,12 +14,15 @@ The project requires the following to be installed on your machine:
 * Create a new repository in GitHub from template `ap-fsharp-template`.
 * Checkout new repository locally
 * In the `terminal`, go to the root directory of the solution and run the following command
-  * For windows,
-      `.\init.cmd` or `.\init.cmd [Solution name] [Project name] [CI/CD Strategy: (<Automatic>,<Approval>)]`
-  * For linux/mac, update permission of init.sh by `chmod +x init.sh`, then run
-    `./init.sh` or `./init.sh [Solution name] [Project name] [CI/CD Strategy: (<Automatic>,<Approval>)]`
+  * For windows/linux/mac using a linux bash tool, update permission of init.sh by `chmod +x init.sh`, then run
+    `./init.sh` or `./init.sh [Solution name] [Project name] [CI/CD Strategy: (<Automatic>,<Approval>)] [Cloud Provider: (<Azure>)]`
 * Define a CI/CD Pipeline deployment strategy (See CircleCI).
 * Commit and push changes
+* Set up az-service-account Context Environment Variables (%_SERVICE_APP_ID, %_SERVICE_APP_PASSWORD):
+  * az-service-account-labs
+  * az-service-account-preview
+  * az-service-account-cloud
+* Request Admins to execute the Role Assignment script to Cloud Provider on JIRA (Script to be used -> `azureadminrolesassigment.sh`)
 * Set up new project using included config in CircleCI
 
 ## Run the application
@@ -63,7 +66,9 @@ Azure Data Sources
   (https://www.terraform.io/cli/commands/destroy)
 
 ## CircleCI
-* .circleci/config.yml
+* .circleci/config.yml (Mocked for Template)
+* .circleci/config-automatic.yml
+* .circleci/config-approval.yml
 * Terraform Orb Documentation
 https://circleci.com/developer/orbs/orb/circleci/terraform
 * `Deployment strategy`:

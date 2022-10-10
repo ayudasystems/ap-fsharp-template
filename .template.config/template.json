@@ -27,7 +27,6 @@
       "modifiers": [
         {
           "exclude": [
-            "init.cmd",
             "ap-fsharp-template.sln"
           ]
         }

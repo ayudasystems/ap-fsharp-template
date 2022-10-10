@@ -7,16 +7,16 @@ orbs:
   terraform: circleci/terraform@3.1.0
 
 # Note: These are provided by the az-service-account-labs context
-# - <CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_ID
-# - <CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_PASSWORD
+# - CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_ID
+# - CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_PASSWORD
 
 # Note: These are provided by the az-service-account-preview context
-# - <CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_ID
-# - <CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_PASSWORD
+# - CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_ID
+# - CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_PASSWORD
 
 # Note: These are provided by the az-service-account-cloud context
-# - <CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_ID
-# - <CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_PASSWORD
+# - CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_ID
+# - CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_PASSWORD
 
 # Note: These are provided by the ayuda-acr-preview context
 # - AP_CONTAINER_REGISTRY_HOST
@@ -64,13 +64,13 @@ orbs:
 
 parameters:
   project_name:
-    default: FSharpTemplate
+    default: CIRCLECIPROJECTNAME
     type: string
   service_name:
-    default: fsharptemplate
+    default: CIRCLECISOLUTIONNAME
     type: string
   docker_name:
-    default: fsharptemplate
+    default: CIRCLECISOLUTIONNAME
     type: string
   terraform_backend_config_file:
     default: backend.hcl
@@ -166,8 +166,8 @@ jobs:
             key                  = "<< pipeline.parameters.docker_name >>.$AZURE_BACKEND_TERRAFORM_KEY"
             END
             export ARM_SUBSCRIPTION_ID=$AZ_SUBSCRIPTION_ID
-            export ARM_CLIENT_ID=$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_ID
-            export ARM_CLIENT_SECRET=$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_PASSWORD
+            export ARM_CLIENT_ID=$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_ID
+            export ARM_CLIENT_SECRET=$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_PASSWORD
             export ARM_TENANT_ID=$AZ_TENANT
             SERVICE_NAME=<< pipeline.parameters.service_name >>
             ENVIRONMENT_SUFFIX=`cat /tmp/project/Terraform/$TERRAFORM_ENV_CONFIG_FILE | grep environment_suffix | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//'`
@@ -180,8 +180,8 @@ jobs:
             service_name = "$SERVICE_NAME"
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
             azure_subscription_tenant_id = "$AZ_TENANT"
-            service_principal_appid = "$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_ID"
-            service_principal_password = "$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_PASSWORD"
+            service_principal_appid = "$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_ID"
+            service_principal_password = "$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_PASSWORD"
             docker_registry_server_url = "$AP_CONTAINER_REGISTRY_HOST"
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
@@ -211,8 +211,8 @@ jobs:
             cd /tmp/project/Terraform
             TERRAFORM_BACKEND_CONFIG_FILE=<< pipeline.parameters.terraform_backend_config_file >>
             export ARM_SUBSCRIPTION_ID=$AZ_SUBSCRIPTION_ID
-            export ARM_CLIENT_ID=$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_ID
-            export ARM_CLIENT_SECRET=$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_PASSWORD
+            export ARM_CLIENT_ID=$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_ID
+            export ARM_CLIENT_SECRET=$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_PASSWORD
             export ARM_TENANT_ID=$AZ_TENANT
             terraform init -backend-config=/tmp/project/Terraform/$TERRAFORM_BACKEND_CONFIG_FILE
             terraform validate
@@ -224,8 +224,8 @@ jobs:
             service_name = "$SERVICE_NAME"
             azure_subscription_id = "$AZ_SUBSCRIPTION_ID"
             azure_subscription_tenant_id = "$AZ_TENANT"
-            service_principal_appid = "$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_ID"
-            service_principal_password = "$<CIRCLECICONFIGPRINCIPALACCOUNT>_SERVICE_APP_PASSWORD"
+            service_principal_appid = "$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_ID"
+            service_principal_password = "$CIRCLECICONFIGPRINCIPALACCOUNT_SERVICE_APP_PASSWORD"
             docker_registry_server_url = "$AP_CONTAINER_REGISTRY_HOST"  
             docker_container_name = "$DOCKER_CONTAINER_NAME"
             docker_container_tag = "$DOCKER_CONTAINER_TAG"
