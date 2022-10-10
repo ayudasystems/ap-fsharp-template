@@ -18,6 +18,11 @@ The project requires the following to be installed on your machine:
     `./init.sh` or `./init.sh [Solution name] [Project name] [CI/CD Strategy: (<Automatic>,<Approval>)] [Cloud Provider: (<Azure>)]`
 * Define a CI/CD Pipeline deployment strategy (See CircleCI).
 * Commit and push changes
+* Set up az-service-account Context Environment Variables (%_SERVICE_APP_ID, %_SERVICE_APP_PASSWORD):
+  * az-service-account-labs
+  * az-service-account-preview
+  * az-service-account-cloud
+* Request Admins to execute the Role Assignment script to Cloud Provider on JIRA 
 * Set up new project using included config in CircleCI
 
 ## Run the application
