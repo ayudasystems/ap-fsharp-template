@@ -67,10 +67,10 @@ parameters:
     default: FSharpTemplate
     type: string
   service_name:
-    default: CIRCLECISOLUTIONNAME
+    default: fsharptemplate
     type: string
   docker_name:
-    default: CIRCLECISOLUTIONNAME
+    default: fsharptemplate
     type: string
   terraform_backend_config_file:
     default: backend.hcl
