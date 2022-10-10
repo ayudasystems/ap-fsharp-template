@@ -64,7 +64,7 @@ orbs:
 
 parameters:
   project_name:
-    default: CIRCLECIPROJECTNAME
+    default: FsharpTemplate
     type: string
   service_name:
     default: CIRCLECISOLUTIONNAME
