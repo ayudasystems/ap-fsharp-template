@@ -22,7 +22,7 @@ The project requires the following to be installed on your machine:
   * az-service-account-labs
   * az-service-account-preview
   * az-service-account-cloud
-* Request Admins to execute the Role Assignment script to Cloud Provider on JIRA 
+* Request Admins to execute the Role Assignment script to Cloud Provider on JIRA (Script to be used -> `azureadminrolesassigment.sh`)
 * Set up new project using included config in CircleCI
 
 ## Run the application
