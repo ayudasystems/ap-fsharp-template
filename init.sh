@@ -60,7 +60,10 @@ if [ "$CLOUD_PROVIDER" = "Azure" ]
 then
   ./azuresetup.sh
 fi
-rm -vrf !(azuresetup.sh)
+rm -f ./azuresetup.sh
+rm -f ./azureadminrolesassignment.sh
+rm -R ./ARMTemplates
+rm -R ./docs
 
 # Apply template
 dotnet new --install .
@@ -71,8 +74,8 @@ dotnet build $TMP_DIR/$SOLUTION_NAME/$SOLUTION_NAME.sln
 dotnet new -u "$CURRENT_DIR"
 
 # Copy created solution
-shopt -s extglob 
+shopt -s extglob
 rm -vrf !(init.sh)
-find . -type d -name '.[^.]*' -not -path './.git' -prune -exec rm -rf {} +
-cp -rf $TMP_DIR/$SOLUTION_NAME/* "$CURRENT_DIR" 
+find . -type d -name '.[^.]*' -not -path './.git' -prune -not -path './.circleci' -prune -exec rm -rf {} +
+cp -rf $TMP_DIR/$SOLUTION_NAME/* "$CURRENT_DIR"
 rm -rf $TMP_DIR/$SOLUTION_NAME
