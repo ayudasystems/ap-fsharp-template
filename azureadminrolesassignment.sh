@@ -41,7 +41,7 @@ RESOURCE_GROUP_NAME_SUFFIX_PREVIEW="-preview-eu-01"
 # Assign roles labs principal
 RESOURCE_GROUP_LABS="$RESOURCE_GROUP_NAME_PREFIX$AZ_ROOT_NAME$RESOURCE_GROUP_NAME_SUFFIX_LABS"
 PRINCIPAL_ACCOUNT_LABS="$PRINCIPAL_ACCOUNT_PREFIX$AZ_ROOT_NAME$PRINCIPAL_ACCOUNT_SUFFIX_LABS"
-PRINCIPAL_ACCOUNT_LABS_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_LABS --query [].objectId --output tsv)
+PRINCIPAL_ACCOUNT_LABS_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_LABS --query [].id --output tsv)
 
 if [[ "$ADMIN_ENVIRONMENT_NAME" == "labs" || "$ADMIN_ENVIRONMENT_NAME" == "all" ]];
 then
@@ -59,7 +59,7 @@ fi
 # Assign roles preview principal
 RESOURCE_GROUP_PREVIEW="$RESOURCE_GROUP_NAME_PREFIX$AZ_ROOT_NAME$RESOURCE_GROUP_NAME_SUFFIX_PREVIEW"
 PRINCIPAL_ACCOUNT_PREVIEW="$PRINCIPAL_ACCOUNT_PREFIX$AZ_ROOT_NAME$PRINCIPAL_ACCOUNT_SUFFIX_PREVIEW"
-PRINCIPAL_ACCOUNT_PREVIEW_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_PREVIEW --query [].objectId --output tsv)
+PRINCIPAL_ACCOUNT_PREVIEW_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_PREVIEW --query [].id --output tsv)
 
 if [[ "$ADMIN_ENVIRONMENT_NAME" == "preview" || "$ADMIN_ENVIRONMENT_NAME" == "all" ]];
 then
@@ -86,7 +86,7 @@ RESOURCE_GROUP_NAME_LOCATION_CLOUD="northeurope"
 # Assign roles cloud principal
 RESOURCE_GROUP_CLOUD="$RESOURCE_GROUP_NAME_PREFIX$AZ_ROOT_NAME$RESOURCE_GROUP_NAME_SUFFIX_CLOUD"
 PRINCIPAL_ACCOUNT_CLOUD="$PA_ACCOUNT_CLOUD"
-PRINCIPAL_ACCOUNT_CLOUD_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_CLOUD --query [].objectId --output tsv)
+PRINCIPAL_ACCOUNT_CLOUD_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_CLOUD --query [].id --output tsv)
 
 # Create cloud infra
 # Engineers does not have permissions to create Resource Groups in Cloud
