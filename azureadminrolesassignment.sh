@@ -8,6 +8,14 @@ else
   PA_ACCOUNT_CLOUD=$1
 fi
 
+if [[ "$2" == "" ]];
+then
+  echo "Environment: (<labs>,<preview>,<cloud>,<all>)"
+  read ADMIN_ENVIRONMENT_NAME
+else
+  ADMIN_ENVIRONMENT_NAME=$2
+fi
+
 # Build all script variables from cloud principal account
 PRINCIPAL_ACCOUNT_PREFIX="PA-"
 PRINCIPAL_ACCOUNT_SUFFIX_LABS="-labs"
@@ -17,7 +25,9 @@ AZ_ROOT_NAME_TMP=${PA_ACCOUNT_CLOUD#$PRINCIPAL_ACCOUNT_PREFIX}
 AZ_ROOT_NAME=${AZ_ROOT_NAME_TMP%$PRINCIPAL_ACCOUNT_SUFFIX_CLOUD}
 
 # Login with your admin account
+echo "Logging into Azure..."
 az login > /dev/null 2>&1
+echo "Logged."
 
 # Labs and Preview config
 az account set --subscription "Ayuda Preview" > /dev/null 2>&1
@@ -33,6 +43,8 @@ RESOURCE_GROUP_LABS="$RESOURCE_GROUP_NAME_PREFIX$AZ_ROOT_NAME$RESOURCE_GROUP_NAM
 PRINCIPAL_ACCOUNT_LABS="$PRINCIPAL_ACCOUNT_PREFIX$AZ_ROOT_NAME$PRINCIPAL_ACCOUNT_SUFFIX_LABS"
 PRINCIPAL_ACCOUNT_LABS_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_LABS --query [].objectId --output tsv)
 
+if [[ "$ADMIN_ENVIRONMENT_NAME" == "labs" || "$ADMIN_ENVIRONMENT_NAME" == "all" ]];
+then
 echo "Assigning roles for Labs."
 RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_LABS_OBJ_ID --role "Contributor" --resource-group $RESOURCE_GROUP_LABS)
 echo "Contributor Role assignment command executed for RG $RESOURCE_GROUP_LABS."
@@ -43,12 +55,14 @@ echo "Reader Role assignment command executed for App Service Plan sp-broadsign-
 RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_LABS_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourcegroups\\ayudapreview-eu-01\\providers\\Microsoft.ManagedIdentity\\userAssignedIdentities\\Circleci-Terraform-ACR-pull-EU-UAT)
 echo "Contributor Role assignment command executed for UAI Circleci-Terraform-ACR-pull-EU-UAT."
 echo "Roles assignment process for Labs finished."
-
+fi
 # Assign roles preview principal
 RESOURCE_GROUP_PREVIEW="$RESOURCE_GROUP_NAME_PREFIX$AZ_ROOT_NAME$RESOURCE_GROUP_NAME_SUFFIX_PREVIEW"
 PRINCIPAL_ACCOUNT_PREVIEW="$PRINCIPAL_ACCOUNT_PREFIX$AZ_ROOT_NAME$PRINCIPAL_ACCOUNT_SUFFIX_PREVIEW"
 PRINCIPAL_ACCOUNT_PREVIEW_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT_PREVIEW --query [].objectId --output tsv)
 
+if [[ "$ADMIN_ENVIRONMENT_NAME" == "preview" || "$ADMIN_ENVIRONMENT_NAME" == "all" ]];
+then
 echo "Assigning roles for Preview."
 RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_PREVIEW_OBJ_ID --role "Contributor" --resource-group $RESOURCE_GROUP_PREVIEW)
 echo "Contributor Role assignment command executed for RG $RESOURCE_GROUP_PREVIEW."
@@ -59,6 +73,7 @@ echo "Reader Role assignment command executed for App Service Plan sp-broadsign-
 RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_PREVIEW_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourcegroups\\ayudapreview-eu-01\\providers\\Microsoft.ManagedIdentity\\userAssignedIdentities\\Circleci-Terraform-ACR-pull-EU-UAT)
 echo "Contributor Role assignment command executed for UAI Circleci-Terraform-ACR-pull-EU-UAT."
 echo "Roles assignment process for Preview finished."
+fi
 
 # Cloud config
 az account set --subscription "Ayuda Cloud"  > /dev/null 2>&1
@@ -75,6 +90,8 @@ PRINCIPAL_ACCOUNT_CLOUD_OBJ_ID=$(az ad sp list --display-name $PRINCIPAL_ACCOUNT
 
 # Create cloud infra
 # Engineers does not have permissions to create Resource Groups in Cloud
+if [[ "$ADMIN_ENVIRONMENT_NAME" == "cloud" || "$ADMIN_ENVIRONMENT_NAME" == "all" ]];
+then
 az group create -l $RESOURCE_GROUP_NAME_LOCATION_CLOUD -n $RESOURCE_GROUP_CLOUD > /dev/null 2>&1
 echo "$RESOURCE_GROUP_CLOUD Created."
 
@@ -88,3 +105,4 @@ echo "Reader Role assignment command executed for App Service Plan sp-broadsign-
 RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_CLOUD_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourcegroups\\ayudacloud-eu-01\\providers\\Microsoft.ManagedIdentity\\userAssignedIdentities\\Circleci-Terraform-ACR-pull-EU)
 echo "Contributor Role assignment command executed for UAI Circleci-Terraform-ACR-pull-EU."
 echo "Roles assignment process for Cloud finished."
+fi
