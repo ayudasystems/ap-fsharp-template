@@ -1,3 +1,3 @@
 # terraform apply -var-file="ap.terraform.tfvars"
 
-environment_suffix      = "-ap-01"
+environment_suffix      = "-cloud-ap-01"
