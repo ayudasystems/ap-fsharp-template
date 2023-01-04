@@ -14,8 +14,52 @@ isValidOption() {
   return 1
 }
 
-# Prepare variables and tmp directory
+parseLocation() {
+  region=$1
+  case $region in
+    "na")
+      echo "northcentralus";;
 
+    "eu")
+      echo "northeurope";;
+
+    "ap")
+      echo "australiaeast";;
+
+    *)
+      echo "unknown";;
+  esac
+}
+
+createInfrastructure() {
+  inputServiceName=$1
+  inputEnvironment=$2
+  inputRegion=$3
+
+  # Config variables
+  RESOURCE_GROUP_NAME_PREFIX="rg"
+  PRINCIPAL_ACCOUNT_PREFIX="PA"
+
+  [[ "$inputEnvironment" == "all" ]] && environments=("labs" "preview" "cloud") || environments=($inputEnvironment)
+  [[ "$inputRegion" == "all" ]] && regions=("na" "eu" "ap") || regions=($inputRegion)
+  
+  for environment in "${environments[@]}";
+    do
+      for region in "${regions[@]}";
+        do
+          location=$(parseLocation $region)
+          # echo "LOCATION - $location"
+          RESOURCE_GROUP="$RESOURCE_GROUP_NAME_PREFIX-$inputServiceName-$environment-$region"
+          # az group create -l $location -n "$RESOURCE_GROUP"
+          echo "$RESOURCE_GROUP Created." 
+          PA_ACCOUNT="$PRINCIPAL_ACCOUNT_PREFIX-$inputServiceName-$environment-$region"
+          # az ad sp create-for-rbac --name "$PA_ACCOUNT_LABS"
+          echo "$PA_ACCOUNT Created."
+        done;
+    done;
+}
+
+# Prepare variables and tmp directory
 if [[ "$1" == "" ]];
 then
   echo "Enter Service Root Name (Lowercase). E.g. fsharptemplate -> as-fsharptemplate"
@@ -49,6 +93,8 @@ do
 done
 
 echo "Summary - Creating Resources for as-$AZ_ROOT_NAME-$AZ_ENVIRONMENT_NAME-$AZ_REGION"
+
+createInfrastructure $AZ_ROOT_NAME $AZ_ENVIRONMENT_NAME $AZ_REGION
 
 
 # # Login with your personal account
