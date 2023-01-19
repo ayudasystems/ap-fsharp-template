@@ -91,7 +91,6 @@ jobs:
       - run:
           name: Running Tests
           command: dotnet test
-          working_directory: << pipeline.parameters.project_name >>
 
   #  other-unit-tests:
   #    ToDo
