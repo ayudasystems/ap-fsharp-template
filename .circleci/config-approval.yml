@@ -86,11 +86,10 @@ jobs:
       - checkout
       - run:
           name: Build
-          command: dotnet build
-          working_directory: << pipeline.parameters.project_name >>
+          command: dotnet build -c Release
       - run:
           name: Running Tests
-          command: dotnet test
+          command: dotnet test -c Release --logger "trx"
 
   #  other-unit-tests:
   #    ToDo
