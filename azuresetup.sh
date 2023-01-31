@@ -57,12 +57,17 @@ createInfrastructure() {
 
       for region in "${regions[@]}";
         do
+          if [ $environment == "labs" ] && ! [ $region == "na" ]; 
+          then
+            echo "$region region is not available on $environment continuing."
+            continue
+          fi
           location=$(parseLocation $region)
           RESOURCE_GROUP="$RESOURCE_GROUP_NAME_PREFIX-$inputServiceName-$environment-$region-01"
-          # az group create -l $location -n "$RESOURCE_GROUP"
+          az group create -l $location -n "$RESOURCE_GROUP"
           echo "$RESOURCE_GROUP Created." 
           PA_ACCOUNT="$PRINCIPAL_ACCOUNT_PREFIX-$inputServiceName-$environment-$region"
-          # az ad sp create-for-rbac --name "$PA_ACCOUNT"
+          az ad sp create-for-rbac --name "$PA_ACCOUNT"
           echo "$PA_ACCOUNT Created."
         done;
     done;
@@ -91,6 +96,7 @@ done
 
 while [ -z $AZ_REGION ]
 do
+
   validOptions=("na" "eu" "ap" "all")
   echo "Region: (<na>,<eu>,<ap>,<all>). E.g. as-$AZ_ROOT_NAME-$AZ_ENVIRONMENT_NAME-eu"
   read AZ_REGION
@@ -107,16 +113,3 @@ echo "Summary - Creating Resources for as-$AZ_ROOT_NAME-$AZ_ENVIRONMENT_NAME-$AZ
 az login
 
 createInfrastructure $AZ_ROOT_NAME $AZ_ENVIRONMENT_NAME $AZ_REGION
-
-# echo "################################"
-# echo "Summary to report to Azure Admin"
-# echo "Labs:"
-# echo "Resource Group: $RESOURCE_GROUP_LABS"
-# echo "Principal Account: $PA_ACCOUNT_LABS"
-# echo "Preview:"
-# echo "Resource Group: $RESOURCE_GROUP_PREVIEW"
-# echo "Principal Account: $PA_ACCOUNT_PREVIEW"
-# echo "Cloud:"
-# echo "Resource Group: $RESOURCE_GROUP_CLOUD"
-# echo "Principal Account: $PA_ACCOUNT_CLOUD"
-# echo "################################"
