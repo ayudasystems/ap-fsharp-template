@@ -32,7 +32,7 @@ parseLocation() {
 }
 
 AssignRoles() {
-  PA_ACCOUNT_CLOUD=$1
+  AZ_ROOT_NAME=$1
   inputEnvironment=$2
   inputRegion=$3
 
@@ -41,13 +41,8 @@ AssignRoles() {
   PRINCIPAL_ACCOUNT_SUFFIX_LABS="-labs"
   PRINCIPAL_ACCOUNT_SUFFIX_PREVIEW="-preview"
   PRINCIPAL_ACCOUNT_SUFFIX_CLOUD="-cloud"
-  AZ_ROOT_NAME_TMP=${PA_ACCOUNT_CLOUD#$PRINCIPAL_ACCOUNT_PREFIX}
-  AZ_ROOT_NAME=${AZ_ROOT_NAME_TMP%$PRINCIPAL_ACCOUNT_SUFFIX_CLOUD}
-
   RESOURCE_GROUP_NAME_PREFIX="rg-"
 
-
-  echo "AZ_ROOT_NAME_TMP: $AZ_ROOT_NAME_TMP"
   echo "AZ_ROOT_NAME: $AZ_ROOT_NAME"
 
   [[ "$inputEnvironment" == "all" ]] && environments=("labs" "preview" "cloud") || environments=($inputEnvironment)
@@ -116,21 +111,21 @@ AssignRoles() {
         # # Engineers does not have permissions to create Resource Groups in Cloud
         if [ $environment == "cloud" ];
           then
-          # az group create -l $location -n $RESOURCE_GROUP
+          az group create -l $location -n $RESOURCE_GROUP
           echo "$RESOURCE_GROUP Created."
         fi
 
-        echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --resource-group $RESOURCE_GROUP"
-        # RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --resource-group $RESOURCE_GROUP)
+        # echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --resource-group $RESOURCE_GROUP"
+        az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --resource-group $RESOURCE_GROUP
         # echo "Contributor Role assignment command executed for $RESOURCE_GROUP."
-        echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$TF_STATE\\providers\\Microsoft.Storage\\storageAccounts\\$TF_STORAGE"
-        # RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$TF_STATE\\providers\\Microsoft.Storage\\storageAccounts\\$TF_STORAGE)
+        # echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$TF_STATE\\providers\\Microsoft.Storage\\storageAccounts\\$TF_STORAGE"
+        az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$TF_STATE\\providers\\Microsoft.Storage\\storageAccounts\\$TF_STORAGE
         # echo "Contributor Role assignment command executed for Terraform StorageAccount $TF_STORAGE."
-        echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Reader" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$BROADSIGN_RG\\providers\\Microsoft.Web\\serverFarms\\$SERVICE_PROVIDER"
-        # RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Reader" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$BROADSIGN_RG\\providers\\Microsoft.Web\\serverFarms\\$SERVICE_PROVIDER)
+        # echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Reader" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$BROADSIGN_RG\\providers\\Microsoft.Web\\serverFarms\\$SERVICE_PROVIDER"
+        az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Reader" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourceGroups\\$BROADSIGN_RG\\providers\\Microsoft.Web\\serverFarms\\$SERVICE_PROVIDER
         # echo "Reader Role assignment command executed for App Service Plan $SERVICE_PROVIDER"
-        echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourcegroups\\$USER_RG\\providers\\Microsoft.ManagedIdentity\\userAssignedIdentities\\$TF_UAI"
-        # RESULT_AZ_COMMAND=$(az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourcegroups\\$USER_RG\\providers\\Microsoft.ManagedIdentity\\userAssignedIdentities\\$TF_UAI)
+        # echo "RESULT_AZ_COMMAND= role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourcegroups\\$USER_RG\\providers\\Microsoft.ManagedIdentity\\userAssignedIdentities\\$TF_UAI"
+        az role assignment create --assignee $PRINCIPAL_ACCOUNT_OBJ_ID --role "Contributor" --scope \\subscriptions\\$SUBSCRIPTION_ID\\resourcegroups\\$USER_RG\\providers\\Microsoft.ManagedIdentity\\userAssignedIdentities\\$TF_UAI
         # echo "Contributor Role assignment command executed for UAI $TF_UAI"
       done;
     echo "Roles assignment process for $environment finished."
@@ -140,10 +135,10 @@ AssignRoles() {
 # Prepare variables and tmp directory
 if [[ "$1" == "" ]];
 then
-  echo "Enter Principal Account Cloud. E.g. PA-fsharptemplate-cloud: "
-  read PA_ACCOUNT_CLOUD
+  echo "Enter Principal Account Root Name. E.g. PA-fsharptemplate-cloud-eu -> fsharptemplate:"
+  read PA_ACCOUNT
 else
-  PA_ACCOUNT_CLOUD=$1
+  PA_ACCOUNT=$1
 fi
 
 while [ -z $AZ_ENVIRONMENT_NAME ]
@@ -171,9 +166,9 @@ do
 done
 
 # Login with your admin account
-# az login 
+az login 
 
-AssignRoles $PA_ACCOUNT_CLOUD $AZ_ENVIRONMENT_NAME $AZ_REGION
+AssignRoles $PA_ACCOUNT $AZ_ENVIRONMENT_NAME $AZ_REGION
 
 # Labs and Preview config
 # az account set --subscription "Ayuda Preview" > /dev/null 2>&1
