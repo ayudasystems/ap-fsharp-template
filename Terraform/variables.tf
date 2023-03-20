@@ -64,3 +64,13 @@ variable "user_assigned_identity_client_id" {
   type        = string
   description = "Managed Identity Client ID to provide access to Terraform for pulling docker images from Container Registry"
 }
+
+variable "storage_account_name" {
+  type        = string
+  description = "Storage Account Name used for Functions"
+}
+
+variable "storage_env_suffix" {
+  type        = string
+  description = "Environment Suffix for Storage. E.g.: Ayuda Dev -> naci, Ayuda Preview -> euuat, Ayuda Preview -> eucloud"
+}
