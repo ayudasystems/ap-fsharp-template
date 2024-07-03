@@ -3,7 +3,7 @@ The microservice fsharp template.
 
 ## Requirements
 The project requires the following to be installed on your machine:
-* .NET Core 6.0 ([download](https://dotnet.microsoft.com/download/dotnet-core))
+* .NET Core 8.0 ([download](https://dotnet.microsoft.com/download/dotnet-core))
 
 ## Technologies used
 * `F#`
