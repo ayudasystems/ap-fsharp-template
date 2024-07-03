@@ -15,7 +15,7 @@ parameters:
 jobs:
   build_test:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:8.0
+      - image: mcr.microsoft.com/dotnet/sdk:8.0.203-jammy
     resource_class: small
     steps:
       - checkout
